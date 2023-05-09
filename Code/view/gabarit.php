@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 08.05.2023
+ * save date : 09.05.2023
  */
 
 ?>
@@ -17,31 +17,87 @@
     <title>Loc'Habitat</title>
 </head>
 
-<body>
+<body class="bg-gradient-to-r from-blue-950 via-blue-900 to-blue-950">
 
 <!-- main-menu Start -->
 <header>
     <div class="navbar bg-base-100">
         <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h8m-8 6h16"/>
+                    </svg>
+                </label>
+                <ul tabindex="0"
+                    class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-32">
+                    <li><a href="index.php?action=locations">Locations</a></li>
+                    <?php if (isset($_SESSION['userEmailAddress'])) : ?>
+                        <li tabindex="0">
+                            <a href="index.php?action=profil" class="justify-between">
+                                <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                                    <div class="w-10 rounded-full">
+                                        <img src="view/img/defaultPFP.png"/>
+                                    </div>
+                                </label>
+                                <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                     viewBox="0 0 24 24">
+                                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                </svg>
+                            </a>
+                            <ul class="p-2 bg-base-100">
+                                <li><a href="index.php?action=intolerances">Mes biens</a></li>
+                                <li><a href="index.php?action=logout" class="bg-red-800">Déconnexion</a></li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <li><a href="index.php?action=login">S'authentifier</a></li>
+                        <li><a href="index.php?action=register">Créer un compte</a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
             <a href="index.php?action=home" class="btn btn-ghost normal-case text-xl">Loc'Habitat</a>
         </div>
         <div class="navbar-center">
             <div class="form-control">
-                <input type="text" placeholder="Rechercher" class="input input-bordered" />
+                <input type="text" placeholder="Rechercher" class="input input-bordered"/>
             </div>
         </div>
-        <div class="navbar-end">
+        <div class="navbar-end hidden lg:flex">
             <ul class="menu menu-horizontal px-1">
-                <li><a href="index.php?action=login">Locations</a></li>
-                <li><a href="index.php?action=login">S'authentifier</a></li>
-                <li><a href="index.php?action=register">Créer un compte</a></li>
+                <li><a href="index.php?action=locations">Locations</a></li>
+                <?php if (isset($_SESSION['userEmailAddress'])) : ?>
+                    <li tabindex="0">
+                        <a href="index.php?action=profil">
+                            <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                 viewBox="0 0 24 24">
+                                <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
+                            </svg>
+                            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                                <div class="w-10 rounded-full">
+                                    <img src="view/img/defaultPFP.png"/>
+                                </div>
+                            </label>
+                        </a>
+                        <ul class="p-2 bg-base-100">
+                            <li><a href="index.php?action=intolerances">Mes biens</a></li>
+                            <li><a href="index.php?action=logout" class="bg-red-800">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                <?php else: ?>
+                    <li><a href="index.php?action=login">S'authentifier</a></li>
+                    <li><a href="index.php?action=register">Créer un compte</a></li>
+                <?php endif; ?>
             </ul>
+            <br>
         </div>
     </div>
-</header><!-- /.top-area-->
-
+</header>
 <!-- main-menu End -->
-<div class="content">
+
+<div class="content text-neutral-50">
     <?= $content; ?>
 </div>
 
