@@ -119,3 +119,10 @@ function createSession($userEmailAddress, $userType)
     $_SESSION['userEmailAddress'] = $userEmailAddress;
     $_SESSION['userType'] = $userType;
 }
+
+
+function locations(){
+    require_once "model/locationsManager.php";
+    $locations = getLocations();
+    require "view/locations.php";
+}

@@ -1,8 +1,8 @@
 <?php
 /**
  * author : Axel Pittet
- * project : TPI 2023
- * save date : 05.05.2023
+ * project : TPI 2023 - Loc'Habitat
+ * save date : 09.05.2023
  */
 
 session_start();
@@ -13,6 +13,18 @@ if (isset($_GET['action'])) {
     switch ($action) {
         case 'home' :
             home();
+            break;
+        case 'register' :
+            register($_POST);
+            break;
+        case 'login' :
+            login($_POST);
+            break;
+        case 'logout' :
+            logout();
+            break;
+        case 'locations' :
+            locations();
             break;
         default :
             home();
