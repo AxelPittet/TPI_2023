@@ -13,3 +13,71 @@ function home()
 {
     require "view/home.php";
 }
+
+
+/**
+ * This function is designed to register a new user.
+ * @param $registerRequest : all values must be set and both passwords must be the same for the register to work. If passwords are not the same or the email is already exisiting, it will display an error message. If the values aren't all set, it will display the register form.
+ * @return void
+ */
+function register($registerRequest)
+{
+    if (isset($registerRequest['inputUserEmailAddress']) && isset($registerRequest['inputUserPsw']) && isset($registerRequest['inputUserConfirmPsw'])
+        && isset($registerRequest['inputUserFirstName']) && isset($registerRequest['inputUserLastName']) && isset($registerRequest['inputUserPhoneNumber'])) {
+
+        $userFirstName = $registerRequest ['inputUserFirstName'];
+        $userLastName = $registerRequest ['inputUserLastName'];
+        $userPhoneNumber = $registerRequest ['inputUserPhoneNumber'];
+        $userEmailAddress = $registerRequest['inputUserEmailAddress'];
+        $userPsw = $registerRequest['inputUserPsw'];
+        $userConfirmPsw = $registerRequest['inputUserConfirmPsw'];
+
+        $testsPassed = false;
+        //form data verification
+        require_once "model/usersManager.php";
+        if (strlen($userPhoneNumber) > 15) {
+            $registerErrorMessage = "Le n° de téléphone n'est pas valide !";
+        } else if (strlen($userFirstName) > 80) {
+            $registerErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+        } else if (strlen($userLastName) > 80) {
+            $registerErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+        } else if (emailAlreadyExists($userEmailAddress)) {
+            $registerErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+        } else if ($userPsw != $userConfirmPsw) {
+            $registerErrorMessage = "Les mots de passe ne correspondent pas !";
+        } else {
+            $testsPassed = true;
+        }
+
+        if ($testsPassed) {
+            require_once "model/usersManager.php";
+            if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
+                $userType = getUserType($userEmailAddress);
+                createSession($userEmailAddress, $userType);
+                $registerErrorMessage = null;
+                home();
+            } else {
+                $registerErrorMessage = "L'inscription n'est pas possible avec les valeurs saisies !";
+                require "view/register.php";
+            }
+        } else {
+            require "view/register.php";
+        }
+    } else {
+        $registerErrorMessage = null;
+        require "view/register.php";
+    }
+}
+
+
+/**
+ * This function is designed create a session for a user after a login or register
+ * @param $userEmailAddress : must contain the email that was used to log in or register
+ * @param $userType : must contain an int which is equal to 1 if this is a normal user or 2 if this is an admin
+ * @return void
+ */
+function createSession($userEmailAddress, $userType)
+{
+    $_SESSION['userEmailAddress'] = $userEmailAddress;
+    $_SESSION['userType'] = $userType;
+}
