@@ -71,6 +71,31 @@ function register($registerRequest)
 
 
 /**
+ * This function is designed to log in an exisiting user.
+ * @param $loginRequest : all values must be set and must match with a user in the database for the user to be logged in. If it does not match, it will display an error message. If all the values aren't set, it will display the login form.
+ * @return void
+ */
+function login($loginRequest)
+{
+    if (isset($loginRequest['inputUserEmailAddress']) && isset($loginRequest['inputUserPsw'])) {
+        $userEmailAddress = $loginRequest['inputUserEmailAddress'];
+        $userPsw = $loginRequest['inputUserPsw'];
+        require_once "model/usersManager.php";
+        if (isLoginCorrect($userEmailAddress, $userPsw)) {
+            $userType = getUserType($userEmailAddress);
+            createSession($userEmailAddress, $userType);
+            $loginErrorMessage = null;
+            home();
+        } else {
+            $loginErrorMessage = "Cette combinaison n'existe pas !";
+            require "view/login.php";
+        }
+    } else {
+        $loginErrorMessage = null;
+        require "view/login.php";
+    }
+}
+/**
  * This function is designed create a session for a user after a login or register
  * @param $userEmailAddress : must contain the email that was used to log in or register
  * @param $userType : must contain an int which is equal to 1 if this is a normal user or 2 if this is an admin

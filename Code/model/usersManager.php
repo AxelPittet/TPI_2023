@@ -48,3 +48,46 @@ function getUserType($userEmailAddress) {
 
     return $result;
 }
+
+
+/**
+ * This function is designed to check if the values of the login form are matching with an exisiting user
+ * @param $userEmailAddress
+ * @param $userPsw
+ * @return bool
+ */
+function isLoginCorrect($userEmailAddress, $userPsw)
+{
+    $result = false;
+
+    $strSeparator = '\'';
+    $loginQuery = 'SELECT * FROM users WHERE email = ' . $strSeparator . $userEmailAddress . $strSeparator;
+
+    require_once 'model/dbConnector.php';
+    $queryResult = executeQuerySelect($loginQuery);
+
+    if (count($queryResult) == 1) {
+        $userHashPsw = $queryResult[0]['password'];
+        if (password_verify($userPsw, $userHashPsw) == true) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+    } else {
+        $result = false;
+    }
+
+    return $result;
+}
+
+
+function emailAlreadyExists($userEmailAddress) {
+    $query = "SELECT * FROM users WHERE email = '$userEmailAddress'";
+
+    require_once 'model/dbConnector.php';
+    if(empty(executeQuerySelect($query))) {
+        return false;
+    } else {
+        return true;
+    }
+}
