@@ -95,6 +95,19 @@ function login($loginRequest)
         require "view/login.php";
     }
 }
+
+
+/**
+ * This function is designed to log out a user by resetting the $_SESSION variable
+ * @return void
+ */
+function logout()
+{
+    session_destroy();
+    header('LOCATION:/home');
+}
+
+
 /**
  * This function is designed create a session for a user after a login or register
  * @param $userEmailAddress : must contain the email that was used to log in or register
