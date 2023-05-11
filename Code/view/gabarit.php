@@ -66,7 +66,6 @@
         </div>
         <div class="navbar-center">
             <div class="form-control">
-                <input type="text" placeholder="Rechercher" class="input input-bordered"/>
                 <input id="inputSearch" type="text" placeholder="Rechercher" class="input input-bordered"/>
             </div>
         </div>
@@ -113,7 +112,6 @@
     </span>
 </footer>
 <!-- footer-copyright end -->
-
 <script>
     var input = document.getElementById("inputSearch");
     input.addEventListener("keypress", function(event) {
