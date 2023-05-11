@@ -67,6 +67,7 @@
         <div class="navbar-center">
             <div class="form-control">
                 <input type="text" placeholder="Rechercher" class="input input-bordered"/>
+                <input id="inputSearch" type="text" placeholder="Rechercher" class="input input-bordered"/>
             </div>
         </div>
         <div class="navbar-end hidden lg:flex">
@@ -113,5 +114,13 @@
 </footer>
 <!-- footer-copyright end -->
 
+<script>
+    var input = document.getElementById("inputSearch");
+    input.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            window.location.href = "index.php?action=search&search=" + input.value;
+        }
+    });
+</script>
 </body>
 </html>

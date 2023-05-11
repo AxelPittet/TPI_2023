@@ -29,6 +29,9 @@ if (isset($_GET['action'])) {
         case 'showLocation' :
             showLocation();
             break;
+        case 'search' :
+            search($_GET);
+            break;
         default :
             home();
     }

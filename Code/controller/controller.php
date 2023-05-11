@@ -137,3 +137,12 @@ function showLocation()
     $location = getSpecificLocation($locationNumber);
     require "view/specificLocation.php";
 }
+
+
+function search($searchRequest)
+{
+    $search = $searchRequest['search'];
+    require_once "model/locationsManager.php";
+    $locations = getLocationsResearch($search);
+    require "view/locations.php";
+}

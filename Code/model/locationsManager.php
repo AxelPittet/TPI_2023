@@ -33,4 +33,20 @@ GROUP BY locations.id;";
     $specificLocation = executeQuerySelect($getSpecificLocationQuery);
     return $specificLocation;
 }
+
+
+function getLocationsResearch($search)
+{
+    $getLocationsResearch = "SELECT locations.*, GROUP_CONCAT(DISTINCT images.name) AS imageNames,
+GROUP_CONCAT(DISTINCT reservations.startDate) AS startDates,
+GROUP_CONCAT(DISTINCT reservations.endDate) AS endDates
+FROM locations
+INNER JOIN images ON images.location_id = locations.id
+LEFT JOIN reservations ON reservations.location_id = locations.id
+WHERE locations.place LIKE '%$search%'
+GROUP BY locations.id;";
+    require_once "model/dbconnector.php";
+    $locationsResearch = executeQuerySelect($getLocationsResearch);
+    return $locationsResearch;
+}
 }
