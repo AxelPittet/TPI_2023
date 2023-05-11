@@ -14,6 +14,10 @@
     <meta name="description" content="This page is the gabarit of the site">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/view/css/output.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link rel="stylesheet"
+          href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
     <title>Loc'Habitat</title>
 </head>
 

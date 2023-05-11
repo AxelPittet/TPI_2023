@@ -122,7 +122,18 @@ function createSession($userEmailAddress, $userType)
 
 
 function locations(){
+function locations()
+{
     require_once "model/locationsManager.php";
     $locations = getLocations();
     require "view/locations.php";
+}
+
+
+function showLocation()
+{
+    $locationNumber = $_GET['locationNumber'];
+    require_once "model/locationsManager.php";
+    $location = getSpecificLocation($locationNumber);
+    require "view/specificLocation.php";
 }
