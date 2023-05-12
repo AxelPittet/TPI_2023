@@ -32,6 +32,9 @@ if (isset($_GET['action'])) {
         case 'search' :
             search($_GET);
             break;
+        case 'filters' :
+            filter($_POST);
+            break;
         default :
             home();
     }

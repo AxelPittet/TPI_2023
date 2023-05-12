@@ -146,3 +146,49 @@ function search($searchRequest)
     $locations = getLocationsResearch($search);
     require "view/locations.php";
 }
+
+
+function filter($filterRequest)
+{
+    $place = $filterRequest['inputPlace'];
+    $startDate = $filterRequest['inputStartDate'];
+    $endDate = $filterRequest['inputEndDate'];
+    $nbOfClients = $filterRequest['inputClientsRange'];
+    $checkboxHouse = $filterRequest['inputCheckboxHouse'];
+    $checkboxApartment = $filterRequest['inputCheckboxApartment'];
+
+    require_once "model/locationsManager.php";
+    $locations = getLocationsFiltered($place, $nbOfClients, $checkboxHouse, $checkboxApartment);
+
+    if ($startDate != '' && $endDate != '') {
+        $userDateRange = new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            new DateTime($endDate)
+        );
+        $arrayCount = 0;
+        foreach ($locations as $location) {
+            $startDates = explode(',', $location['startDates']);
+            $endDates = explode(',', $location['endDates']);
+            $arrayCount2 = 0;
+            foreach ($startDates as $startDate) {
+                $bddDateRange = new DatePeriod(
+                    new DateTime($startDate),
+                    new DateInterval('P1D'),
+                    new DateTime($endDates[$arrayCount2])
+                );
+                foreach ($userDateRange as $userDate) {
+                    foreach ($bddDateRange as $bddDate) {
+                        if ($userDate == $bddDate) {
+                            unset($locations[$arrayCount]);
+                        }
+                    }
+                }
+                unset($bddDateRange);
+                $arrayCount2 += 1;
+            }
+            $arrayCount += 1;
+        }
+    }
+    require "view/locations.php";
+}

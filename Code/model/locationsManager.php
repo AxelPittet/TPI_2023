@@ -49,4 +49,38 @@ GROUP BY locations.id;";
     $locationsResearch = executeQuerySelect($getLocationsResearch);
     return $locationsResearch;
 }
+
+
+function getLocationsFiltered($place, $nbOfClients, $checkboxHouse, $checkboxApartment)
+{
+    $getLocationsFiltered = "SELECT locations.*, GROUP_CONCAT(DISTINCT images.name) AS imageNames,
+GROUP_CONCAT(DISTINCT reservations.startDate) AS startDates,
+GROUP_CONCAT(DISTINCT reservations.endDate) AS endDates
+FROM locations
+INNER JOIN images ON images.location_id = locations.id
+LEFT JOIN reservations ON reservations.location_id = locations.id
+WHERE ";
+    $count = 0;
+    if ($place != '') {
+        $getLocationsFiltered = $getLocationsFiltered . "locations.place LIKE '%$place%'";
+        $count += 1;
+    }
+    if ($count != 0) {
+        $getLocationsFiltered = $getLocationsFiltered . " AND ";
+    }
+    $getLocationsFiltered = $getLocationsFiltered . "locations.maximumNbOfClients >= '$nbOfClients'";
+
+    if ($checkboxHouse != '' || $checkboxApartment != '') {
+        if ($checkboxHouse != '') {
+            $getLocationsFiltered = $getLocationsFiltered . " AND locations.housingType = 'Maison'";
+        } else {
+            $getLocationsFiltered = $getLocationsFiltered . " AND locations.housingType = 'Appartement'";
+        }
+    }
+    $getLocationsFiltered = $getLocationsFiltered . " GROUP BY locations.id;";
+
+    require_once "model/dbconnector.php";
+    $locationsFiltered = executeQuerySelect($getLocationsFiltered);
+    return $locationsFiltered;
+}
 }
