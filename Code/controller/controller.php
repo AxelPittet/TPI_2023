@@ -121,7 +121,6 @@ function createSession($userEmailAddress, $userType)
 }
 
 
-function locations(){
 function locations()
 {
     require_once "model/locationsManager.php";
@@ -191,4 +190,49 @@ function filter($filterRequest)
         }
     }
     require "view/locations.php";
+}
+
+
+function userLocations($userLocationsRequest, $userLocationsFiles)
+{
+    if (empty($_GET['userLocationsFunction'])) {
+        require "view/userLocations.php";
+    } else {
+        switch ($_GET['userLocationsFunction']) {
+            case 'add' :
+                if (empty($userLocationsRequest)) {
+                    require "view/addLocation.php";
+                } else {
+                    $locationName = $userLocationsRequest['inputLocationName'];
+                    $locationPlace = $userLocationsRequest['inputLocationPlace'];
+                    $locationDescription = $userLocationsRequest['inputLocationDescription'];
+                    $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
+                    $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
+                    $locationPrice = $userLocationsRequest['inputLocationPrice'];
+
+                    $locationImages = array();
+                    foreach ($userLocationsFiles as $key => $value) {
+                        if ($value['error'] == UPLOAD_ERR_OK && strpos($value['type'], 'image/') === 0) {
+                            $target_path = 'view/img/' . $value['name'];
+
+                            if (move_uploaded_file($value['tmp_name'], $target_path)) {
+                                $locationImages[] = $target_path;
+                            }
+                        }
+                    }
+                    require "view/home.php";
+                }
+                break;
+            case 'modify' :
+                if (empty($userLocationsRequest)) {
+
+                } else {
+
+                }
+                break;
+            case 'delete' :
+
+                break;
+        }
+    }
 }

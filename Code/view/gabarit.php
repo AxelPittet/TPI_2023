@@ -18,6 +18,7 @@
     <link rel="stylesheet"
           href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Loc'Habitat</title>
 </head>
 
@@ -40,7 +41,7 @@
                     <li><a href="index.php?action=locations">Locations</a></li>
                     <?php if (isset($_SESSION['userEmailAddress'])) : ?>
                         <li tabindex="0">
-                            <a href="index.php?action=profil" class="justify-between">
+                            <a href="index.php?action=userLocations" class="justify-between">
                                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                                     <div class="w-10 rounded-full">
                                         <img src="view/img/defaultPFP.png"/>
@@ -52,7 +53,7 @@
                                 </svg>
                             </a>
                             <ul class="p-2 bg-base-100">
-                                <li><a href="index.php?action=intolerances">Mes biens</a></li>
+                                <li><a href="index.php?action=userLocations">Mes biens</a></li>
                                 <li><a href="index.php?action=logout" class="bg-red-800">Déconnexion</a></li>
                             </ul>
                         </li>
@@ -74,7 +75,7 @@
                 <li><a href="index.php?action=locations">Locations</a></li>
                 <?php if (isset($_SESSION['userEmailAddress'])) : ?>
                     <li tabindex="0">
-                        <a href="index.php?action=profil">
+                        <a href="index.php?action=userLocations">
                             <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                  viewBox="0 0 24 24">
                                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/>
@@ -86,7 +87,7 @@
                             </label>
                         </a>
                         <ul class="p-2 bg-base-100">
-                            <li><a href="index.php?action=intolerances">Mes biens</a></li>
+                            <li><a href="index.php?action=userLocations">Mes biens</a></li>
                             <li><a href="index.php?action=logout" class="bg-red-800">Déconnexion</a></li>
                         </ul>
                     </li>

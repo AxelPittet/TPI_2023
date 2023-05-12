@@ -35,6 +35,9 @@ if (isset($_GET['action'])) {
         case 'filters' :
             filter($_POST);
             break;
+        case 'userLocations' :
+            userLocations($_POST, $_FILES);
+            break;
         default :
             home();
     }
