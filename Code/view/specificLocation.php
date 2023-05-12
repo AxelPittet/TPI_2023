@@ -90,7 +90,6 @@ ob_start();
 
             $("#datepickerInformation").datepicker({
                 beforeShowDay: function (date) {
-
                     var string = $.datepicker.formatDate('mm-dd-yy', date);
 
                     for (var i = 0; i < date_range.length; i++) {
