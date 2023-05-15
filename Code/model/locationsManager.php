@@ -2,19 +2,18 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 09.05.2023
+ * date : 15.05.2023
  */
 
 
 function getLocations()
 {
-    $getLocationQuery = "SELECT locations.*, GROUP_CONCAT(Images.name) AS imageNames 
-    $getLocationQuery = "SELECT locations.*, GROUP_CONCAT(images.name) AS imageNames 
+    $getLocationsQuery = "SELECT locations.*, GROUP_CONCAT(images.name) AS imageNames 
 FROM locations 
 INNER JOIN images ON images.location_id = locations.id 
 GROUP BY locations.id;";
     require_once "model/dbconnector.php";
-    $locations = executeQuerySelect($getLocationQuery);
+    $locations = executeQuerySelect($getLocationsQuery);
     return $locations;
 }
 
@@ -82,5 +81,30 @@ WHERE ";
     require_once "model/dbconnector.php";
     $locationsFiltered = executeQuerySelect($getLocationsFiltered);
     return $locationsFiltered;
+}
+
+function addLocation($locationNumber, $name, $place, $description, $housingType, $clientsNb, $price, $userId){
+    $addLocationQuery = "INSERT INTO locations (locationNumber, name, place, description, housingType, maximumNbOfClients, pricePerNight, user_id) VALUES ('$locationNumber', '$name', '$place', '$description', '$housingType', '$clientsNb', '$price', '$userId');";
+    require_once 'model/dbconnector.php';
+    $addLocationResult = executeQueryIUD($addLocationQuery);
+    return $addLocationResult;
+}
+
+function getLocationId($locationNumber){
+    $getLocationIdQuery = "SELECT id FROM locations WHERE locationNumber = '$locationNumber'";
+    require_once "model/dbconnector.php";
+    $locationId = executeQuerySelect($getLocationIdQuery);
+    return $locationId;
+}
+
+function locationNumberAlreadyExists($locationNumber) {
+    $query = "SELECT * FROM locations WHERE locationNumber = '$locationNumber'";
+
+    require_once 'model/dbConnector.php';
+    if(empty(executeQuerySelect($query))) {
+        return false;
+    } else {
+        return true;
+    }
 }
 }

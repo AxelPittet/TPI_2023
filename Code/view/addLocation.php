@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 12.05.2023
+ * date : 15.05.2023
  */
 
 ob_start();
@@ -15,7 +15,8 @@ ob_start();
             <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
             <div class="card flex-shrink-0 w-full shadow-2xl bg-base-100">
                 <div class="card-body">
-                    <form action="index.php?action=userLocations&userLocationsFunction=add" method="post" enctype="multipart/form-data">
+                    <form action="index.php?action=userLocations&userLocationsFunction=add" method="post"
+                          enctype="multipart/form-data">
                         <div class="form-control">
                             <input type="text" placeholder="Nom" class="input input-bordered"
                                    name="inputLocationName" required/>
@@ -40,12 +41,13 @@ ob_start();
                                     <span class="label-text">Maison :</span>
                                 </label>
                                 <input id="maison" type="radio" name="inputLocationHousingType" class="radio"
-                                       checked/>
+                                       value="maison" required/>
                                 <div class="divider-horizontal"></div>
                                 <label for="appartement">
                                     <span class="label-text">Appartement :</span>
                                 </label>
-                                <input id="appartement" type="radio" name="inputLocationHousingType" class="radio"/>
+                                <input id="appartement" type="radio" name="inputLocationHousingType" class="radio"
+                                       value="appartement" required/>
                             </div>
                         </div>
                         <br>
@@ -56,12 +58,11 @@ ob_start();
                         <br>
                         <div class="form-control">
                             <input type="number" placeholder="Prix par nuit" class="input input-bordered"
-                                   name="inputLocationPrice" required/>
+                                   name="inputLocationPrice" step=".01" required/>
                         </div>
                         <br>
                         <input class="file-input file-input-bordered w-full max-w-xs" type="file"
-                               name="inputLocationImage1"
-                               accept="image/*" required><br>
+                               name="inputLocationImage[]" accept="image/*" required><br>
                         <button type="button" id="addFile" onclick="addInput()">Ajouter un fichier</button>
                         <div class="form-control mt-6">
                             <input type="submit" value="Ajouter la location" class="btn btn-primary"/>
@@ -76,13 +77,13 @@ ob_start();
 
 <script>
     function addInput() {
-        var newInput = $("<input>").attr({
+        var fileInput = $("<input>").attr({
             class: "file-input file-input-bordered w-full max-w-xs",
             type: "file",
-            name: "inputLocationImage" + ($("#myForm input[type='Image']").length + 1),
+            name: "inputLocationImage[]",
             required: true,
             accept: "image/*"
-        })
+        });
 
         var deleteButton = $("<button>").attr("type", "button").text("Supprimer").on("click", function () {
             $(this).prev().prev().remove();
@@ -90,10 +91,16 @@ ob_start();
             $(this).remove();
         });
 
-        newInput.insertBefore($("#addFile"));
+        fileInput.insertBefore($("#addFile"));
         deleteButton.insertBefore($("#addFile"));
         deleteButton.addClass("btn");
         $("<br>").insertBefore($("#addFile"));
+    }
+
+    window.onload = function showErrorMessage() {
+        <?php if (isset($addLocationErrorMessage)) :?>
+        alert("<?= $addLocationErrorMessage ?>");
+        <?php endif;?>
     }
 </script>
 

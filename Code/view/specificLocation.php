@@ -31,7 +31,7 @@ ob_start();
                                 $imageCount += 1;
                                 ?>
                                 <div id="slide<?= $imageCount ?>" class="carousel-item relative w-full">
-                                    <img src="view/img/<?= $image ?>" class="w-full rounded-box"/>
+                                    <img src="<?= $image ?>" class="w-full rounded-box"/>
                                     <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
                                         <a href="#slide<?= $imageCount - 1 ?>" class="btn btn-circle">❮</a>
                                         <a href="#slide<?= $imageCount + 1 ?>" class="btn btn-circle">❯</a>
@@ -41,7 +41,7 @@ ob_start();
                             ?>
                         </div>
                     <?php else : ?>
-                        <img src="view/img/<?= $images[0] ?>" class="h-1/2 w-1/2 rounded-box"/>
+                        <img src="<?= $images[0] ?>" class="h-1/2 w-1/2 rounded-box"/>
                     <?php endif; ?>
                     <div class="divider-horizontal"></div>
                     <div>

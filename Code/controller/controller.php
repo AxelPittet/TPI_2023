@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 09.05.2023
+ * save date : 15.05.2023
  */
 
 /**
@@ -35,7 +35,7 @@ function register($registerRequest)
         $testsPassed = false;
         //form data verification
         require_once "model/usersManager.php";
-        if (strlen($userPhoneNumber) > 15) {
+        if (strlen($userPhoneNumber) > 14) {
             $registerErrorMessage = "Le n° de téléphone n'est pas valide !";
         } else if (strlen($userFirstName) > 80) {
             $registerErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
@@ -64,7 +64,6 @@ function register($registerRequest)
             require "view/register.php";
         }
     } else {
-        $registerErrorMessage = null;
         require "view/register.php";
     }
 }
@@ -204,23 +203,72 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                     require "view/addLocation.php";
                 } else {
                     $locationName = $userLocationsRequest['inputLocationName'];
+                    $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
                     $locationPlace = $userLocationsRequest['inputLocationPlace'];
+                    $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
                     $locationDescription = $userLocationsRequest['inputLocationDescription'];
+                    $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
                     $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
                     $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
                     $locationPrice = $userLocationsRequest['inputLocationPrice'];
+                    $locationNumber = generateNumber();
+                    require_once "model/locationsManager.php";
+                    while (locationNumberAlreadyExists($locationNumber) == true) {
+                        $locationNumber = generateNumber();
+                    }
 
-                    $locationImages = array();
-                    foreach ($userLocationsFiles as $key => $value) {
-                        if ($value['error'] == UPLOAD_ERR_OK && strpos($value['type'], 'image/') === 0) {
-                            $target_path = 'view/img/' . $value['name'];
+                    $testsPassed = false;
+                    //form data verification
+                    if (strlen($locationName) > 100) {
+                        $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                    } else if (strlen($locationPlace) > 130) {
+                        $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                    } else if (strlen($locationDescription) > 500) {
+                        $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                    } else if (strlen($locationClientsNb) > 10) {
+                        $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                    } else if (strlen($locationPrice) > 7) {
+                        $addLocationErrorMessage = "Le prix est trop élevé !";
+                    } else {
+                        $testsPassed = true;
+                    }
 
-                            if (move_uploaded_file($value['tmp_name'], $target_path)) {
-                                $locationImages[] = $target_path;
+                    if ($testsPassed) {
+                        $locationImages = array();
+                        $uploadDir = "view/img/";
+                        foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                            if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
+                                $filePath = $uploadDir . $fileName;
+
+                                require_once "model/imagesManager.php";
+                                if (imageAlreadyExists($filePath)) {
+                                    $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                    require "view/addLocation.php";
+                                }
+                                move_uploaded_file($tmpName, $filePath);
+
+                                $locationImages[] = $filePath;
                             }
                         }
+
+                        require_once "model/usersManager.php";
+                        $userId = getUserId($_SESSION['userEmailAddress']);
+
+                        require_once "model/locationsManager.php";
+                        if (addLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice, $userId)) {
+                            $locationId = getLocationId($locationNumber);
+                            require_once "model/imagesManager.php";
+                            foreach ($locationImages as $locationImage) {
+                                addLocationImages($locationImage, $locationId[0][0]);
+                            }
+                            require "view/home.php";
+                        } else {
+                            $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                            require "view/addLocation.php";
+                        }
                     }
-                    require "view/home.php";
+                    require "view/addLocation.php";
                 }
                 break;
             case 'modify' :
@@ -235,4 +283,16 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                 break;
         }
     }
+}
+
+
+function generateNumber()
+{
+    $chars = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    $sn = '';
+    $max = count($chars) - 1;
+    for ($i = 0; $i < 9; $i++) {
+        $sn .= $chars[rand(0, $max)];
+    }
+    return $sn;
 }

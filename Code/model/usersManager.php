@@ -91,3 +91,25 @@ function emailAlreadyExists($userEmailAddress) {
         return true;
     }
 }
+
+
+/**
+ * This function is designed to return the id of the user which is currently logged in.
+ * @param $userEmailAddress
+ * @return int|mixed : get the values of the query result
+ */
+function getUserId($userEmailAddress) {
+    $result = 1;
+
+    $strSeparator = '\'';
+    $getUserIdQuery = 'SELECT id FROM users WHERE email =' . $strSeparator . $userEmailAddress . $strSeparator;
+
+    require_once 'model/dbconnector.php';
+    $queryResult = executeQuerySelect($getUserIdQuery);
+
+    if (count($queryResult) == 1) {
+        $result = $queryResult[0]['id'];
+    }
+
+    return $result;
+}

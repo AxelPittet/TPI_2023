@@ -83,7 +83,7 @@ ob_start();
                 ?>
                 <a href="index.php?action=showLocation&locationNumber=<?= $location['locationNumber'] ?>">
                     <div class="card card-compact bg-base-100 shadow-xl">
-                        <figure><img src="view/img/<?= $images[0] ?>" alt="<?= $location['name'] ?>" class="w-96"/>
+                        <figure><img src="<?= $images[0] ?>" alt="<?= $location['name'] ?>" class="w-96"/>
                         </figure>
                         <div class="card-body">
                             <h2 class="card-title relative">
