@@ -271,7 +271,6 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                     require "view/addLocation.php";
                 }
                 break;
-            case 'modify' :
             case
             'modify' :
                 if (empty($userLocationsRequest)) {
@@ -288,7 +287,61 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                         $locationImages = getLocationImages($location[0]['id']);
                         require "view/modifyLocation.php";
                     } else {
+                        if (isset($userLocationsRequest['inputLocationImage'])){
+                            $locationName = $userLocationsRequest['inputLocationName'];
+                            $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                            $locationPlace = $userLocationsRequest['inputLocationPlace'];
+                            $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                            $locationDescription = $userLocationsRequest['inputLocationDescription'];
+                            $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                            $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
+                            $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
+                            $locationPrice = $userLocationsRequest['inputLocationPrice'];
+                            $locationNumber = $userLocationsRequest['inputLocationNumber'];
 
+                            $testsPassed = false;
+                            //form data verification
+                            if (strlen($locationName) > 100) {
+                                $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationPlace) > 130) {
+                                $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationDescription) > 500) {
+                                $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationClientsNb) > 10) {
+                                $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                            } else if (strlen($locationPrice) > 7) {
+                                $addLocationErrorMessage = "Le prix est trop élevé !";
+                            } else {
+                                $testsPassed = true;
+                            }
+
+                            if ($testsPassed){
+                                $locationImages = array();
+                                $uploadDir = "view/img/";
+                                foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                    if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                        $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
+                                        $filePath = $uploadDir . $fileName;
+
+                                        require_once "model/imagesManager.php";
+                                        if (imageAlreadyExists($filePath)) {
+                                            $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                            require "view/addLocation.php";
+                                        }
+                                        move_uploaded_file($tmpName, $filePath);
+
+                                        $locationImages[] = $filePath;
+                                    }
+                                }
+
+
+                            } else {
+                                require "view/modifyLocation.php";
+                            }
+                        } else {
+                            $modifyLocationError = "Veuilez rentrer au minimum une image !";
+                            require "view/modifyLocation.php";
+                        }
                     }
                 }
                 break;
