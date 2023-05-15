@@ -334,6 +334,8 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                                     }
                                 }
 
+                                require_once "model/locationsManager.php";
+
 
                             } else {
                                 require "view/modifyLocation.php";
