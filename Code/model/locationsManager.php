@@ -107,4 +107,13 @@ function locationNumberAlreadyExists($locationNumber) {
         return true;
     }
 }
+
+function getUserLocations($userId){
+    $getUserLocationsQuery = "SELECT locationNumber, name FROM locations WHERE user_id = '$userId';";
+    require_once "model/dbconnector.php";
+    $userLocations = executeQuerySelect($getUserLocationsQuery);
+    return $userLocations;
+}
+
+function modifyLocation($locationNumber, $name, $place, $description, $housingType, $clientsNb, $price){
 }

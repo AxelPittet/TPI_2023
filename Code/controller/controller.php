@@ -272,8 +272,14 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                 }
                 break;
             case 'modify' :
+            case
+            'modify' :
                 if (empty($userLocationsRequest)) {
-
+                    require_once "model/usersManager.php";
+                    $userId = getUserId($_SESSION['userEmailAddress']);
+                    require_once "model/locationsManager.php";
+                    $userLocations = getUserLocations($userId);
+                    require "view/modifyLocationChoice.php";
                 } else {
 
                 }
