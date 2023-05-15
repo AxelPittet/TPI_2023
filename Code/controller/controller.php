@@ -281,7 +281,15 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                     $userLocations = getUserLocations($userId);
                     require "view/modifyLocationChoice.php";
                 } else {
+                    if (empty($userLocationsRequest['inputLocationPlace'])){
+                        require_once "model/locationsManager.php";
+                        $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
+                        require_once "model/imagesManager.php";
+                        $locationImages = getLocationImages($location[0]['id']);
+                        require "view/modifyLocation.php";
+                    } else {
 
+                    }
                 }
                 break;
             case 'delete' :

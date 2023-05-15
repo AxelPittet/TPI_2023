@@ -23,3 +23,10 @@ function imageAlreadyExists($imageName) {
         return true;
     }
 }
+
+function getLocationImages($locationId){
+    $getLocationImagesQuery = "SELECT * FROM images WHERE location_id = '$locationId'";
+    require_once "model/dbconnector.php";
+    $locationImages = executeQuerySelect($getLocationImagesQuery);
+    return $locationImages;
+}
