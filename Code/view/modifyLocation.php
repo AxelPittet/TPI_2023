@@ -98,6 +98,21 @@ ob_start();
                                 <input type="submit" value="Modifier la location" class="btn btn-primary"/>
                             </div>
                         </form>
+                        <label for="modalFiltering" class="btn">Supprimer la location</label>
+                        <input type="checkbox" id="modalFiltering" class="modal-toggle"/>
+                        <div class="modal">
+                            <div class="modal-box">
+                                <label for="modalFiltering"
+                                       class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+                                <h3>Êtes vous sur de vouloir supprimer cette location ?</h3>
+                                <br>
+                                <a href="index.php?action=userLocations&userLocationsFunction=delete&locationNumber=<?= $locationInformations['locationNumber'] ?>" type="button"
+                                   class="btn btn-primary">
+                                    <button>Oui</button>
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

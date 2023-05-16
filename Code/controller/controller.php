@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 15.05.2023
+ * save date : 16.05.2023
  */
 
 /**
@@ -120,6 +120,10 @@ function createSession($userEmailAddress, $userType)
 }
 
 
+/**
+ * This function is designed to display all the locations of the database
+ * @return void
+ */
 function locations()
 {
     require_once "model/locationsManager.php";
@@ -128,6 +132,10 @@ function locations()
 }
 
 
+/**
+ * This function is designed to display a specific location of the database
+ * @return void
+ */
 function showLocation()
 {
     $locationNumber = $_GET['locationNumber'];
@@ -137,6 +145,11 @@ function showLocation()
 }
 
 
+/**
+ * This function is designed to display the locations of the database which place contain the search done by the user
+ * @param $searchRequest : must contain the place the user searched for
+ * @return void
+ */
 function search($searchRequest)
 {
     $search = $searchRequest['search'];
@@ -146,6 +159,12 @@ function search($searchRequest)
 }
 
 
+/**
+ * This function is designed to display the locations of the database which attributes corresponds to the filters selected by the user
+ * @param $filterRequest : at least one of all the values must be set.
+ * @return void
+ * @throws Exception
+ */
 function filter($filterRequest)
 {
     $place = $filterRequest['inputPlace'];
@@ -416,4 +435,10 @@ function generateNumber()
         $sn .= $chars[rand(0, $max)];
     }
     return $sn;
+}
+
+
+function booking($bookRequest)
+{
+
 }

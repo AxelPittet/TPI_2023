@@ -134,4 +134,16 @@ function modifyLocation($locationNumber, $name, $place, $description, $housingTy
     $modifyLocationResult = executeQueryIUD($modifyLocationQuery);
     return $modifyLocationResult;
 }
+
+
+/**
+ * This function is designed to delete a location from the database
+ * @param $locationNumber
+ * @return bool|null
+ */
+function deleteLocation($locationNumber){
+    $deleteLocationQuery = "DELETE FROM locations WHERE locationNumber = '$locationNumber'";
+    require_once "model/dbconnector.php";
+    $deleteLocationResult = executeQueryIUD($deleteLocationQuery);
+    return $deleteLocationResult;
 }

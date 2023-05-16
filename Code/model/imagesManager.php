@@ -24,9 +24,30 @@ function imageAlreadyExists($imageName) {
     }
 }
 
-function getLocationImages($locationId){
+
+/**
+ * This function is designed to return the values of the images table which belong to a certain location
+ * @param $locationId
+ * @return array|null
+ */
+function getLocationImages($locationId)
+{
     $getLocationImagesQuery = "SELECT * FROM images WHERE location_id = '$locationId'";
     require_once "model/dbconnector.php";
     $locationImages = executeQuerySelect($getLocationImagesQuery);
     return $locationImages;
+}
+
+
+/**
+ * This function is designed to delete an image from the database
+ * @param $name
+ * @return bool|null
+ */
+function deleteImage($name)
+{
+    $deleteImageQuery = "DELETE FROM images WHERE name = '$name';";
+    require_once "model/dbconnector.php";
+    $deleteImageResult = executeQueryIUD($deleteImageQuery);
+    return $deleteImageResult;
 }
