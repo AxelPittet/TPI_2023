@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 15.05.2023
+ * date : 16.05.2023
  */
 
 ob_start();
@@ -19,17 +19,16 @@ ob_start();
                             <label class="label" for="locationNumber">
                                 <span class="label-text">N° de location</span>
                             </label>
-                            <input type="text" placeholder="location number" class="input input-bordered"
-                                   name="inputLocationNumber" list="locationNumber" required/>
-                            <datalist id="locationNumber">
+                            <select id="locationNumber" class="input input-bordered" name="inputLocationNumber"
+                                    required>
                                 <?php
                                 foreach ($userLocations
 
-                                as $userLocation):
-                                ?>
-                                <option value="<?= $userLocation['locationNumber'] ?>">
-                                    <?php endforeach; ?>
-                            </datalist>
+                                         as $userLocation):
+                                    ?>
+                                    <option value="<?= $userLocation['locationNumber'] ?>"><?= $userLocation['locationNumber'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-control mt-6">
                             <input type="submit" value="Modifier la location" class="btn btn-primary"/>
@@ -39,6 +38,7 @@ ob_start();
             </div>
         </div>
     </div>
+
 
 <?php
 $content = ob_get_clean();

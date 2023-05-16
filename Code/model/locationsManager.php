@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 15.05.2023
+ * date : 16.05.2023
  */
 
 
@@ -115,5 +115,23 @@ function getUserLocations($userId){
     return $userLocations;
 }
 
-function modifyLocation($locationNumber, $name, $place, $description, $housingType, $clientsNb, $price){
+
+/**
+ * This function is designed to modify a location from the database
+ * @param $locationNumber
+ * @param $name
+ * @param $place
+ * @param $description
+ * @param $housingType
+ * @param $clientsNb
+ * @param $price
+ * @return bool|null
+ */
+function modifyLocation($locationNumber, $name, $place, $description, $housingType, $clientsNb, $price)
+{
+    $modifyLocationQuery = "UPDATE locations SET name = '$name', place = '$place', description = '$description', housingType = '$housingType', maximumNbOfClients = '$clientsNb', pricePerNight = '$price' WHERE locationNumber = '$locationNumber';";
+    require_once "model/dbconnector.php";
+    $modifyLocationResult = executeQueryIUD($modifyLocationQuery);
+    return $modifyLocationResult;
+}
 }

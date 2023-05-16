@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 15.05.2023
+ * date : 16.05.2023
  */
 
 ob_start();
@@ -21,7 +21,7 @@ ob_start();
                             <div class="form-control">
                                 <input type="text" placeholder="N° de location" class="input input-bordered"
                                        name="inputLocationNumber" value="<?= $locationInformations['locationNumber'] ?>"
-                                       disabled required/>
+                                       readonly required/>
                             </div>
                             <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
                             <div class="form-control">
@@ -47,17 +47,17 @@ ob_start();
                                 </label>
                                 <div class="input input-bordered flex w-full md:items-center">
                                     <label for="maison">
-                                        <span class="label-text">Maison :</span>
+                                        <span class="label-text mr-2">Maison :</span>
                                     </label>
                                     <input id="maison" type="radio" name="inputLocationHousingType" class="radio"
-                                           value="maison" <?php if ($locationInformations['housingType'] == 'Maison') : ?> checked <?php endif; ?>
+                                           value="Maison" <?php if ($locationInformations['housingType'] == 'Maison') : ?> checked <?php endif; ?>
                                            required/>
                                     <div class="divider-horizontal"></div>
                                     <label for="appartement">
-                                        <span class="label-text">Appartement :</span>
+                                        <span class="label-text mr-2">Appartement :</span>
                                     </label>
                                     <input id="appartement" type="radio" name="inputLocationHousingType" class="radio"
-                                           value="appartement" <?php if ($locationInformations['housingType'] == 'Appartement') : ?> checked <?php endif; ?>
+                                           value="Appartement" <?php if ($locationInformations['housingType'] == 'Appartement') : ?> checked <?php endif; ?>
                                            required/>
                                 </div>
                             </div>
@@ -76,22 +76,26 @@ ob_start();
                             </div>
                             <?php
                             foreach ($locationImages as $locationImage) :
-                                $count += 1;
-                                ?>
-                                <br>
+                                $imageName = explode('\\', $locationImage['name'])
+                                ?><br>
                                 <input class="input input-bordered" type="text"
-                                       name="inputLocationImage[]" value="<?= $locationImage['name'] ?>"
-                                       accept="image/*" disabled required>
+                                       name="inputLocationExistingImage[]" value="<?= $imageName[0] ?>"
+                                       accept="image/*" readonly required>
+                                <input type="hidden" name="inputLocationRemovedImages[]" value="">
                                 <button type="button" class="btn" onclick="
+                                var existingImageValue = $(this).prev().prev().val();
+                                $(this).prev().val(existingImageValue);
+                                        $(this).prev().prev().prev().remove();
                                         $(this).prev().prev().remove();
-                                        $(this).prev().remove();
+                                        $(this).next().remove();
                                         $(this).remove();
                                         ">Supprimer
                                 </button><br>
                             <?php endforeach; ?>
+                            <br>
                             <button type="button" id="addFile" onclick="addInput()">Ajouter un fichier</button>
                             <div class="form-control mt-6">
-                                <input type="submit" value="Ajouter la location" class="btn btn-primary"/>
+                                <input type="submit" value="Modifier la location" class="btn btn-primary"/>
                             </div>
                         </form>
                     </div>
@@ -114,9 +118,9 @@ ob_start();
         });
 
         var deleteButton = $("<button>").attr("type", "button").text("Supprimer").on("click", function () {
-                $(this).prev().prev().remove();
-                $(this).prev().remove();
-                $(this).remove();
+            $(this).prev().prev().remove();
+            $(this).prev().remove();
+            $(this).remove();
         });
 
         fileInput.insertBefore($("#addFile"));
@@ -126,8 +130,8 @@ ob_start();
     }
 
     window.onload = function showErrorMessage() {
-        <?php if (isset($addLocationErrorMessage)) :?>
-        alert("<?= $addLocationErrorMessage ?>");
+        <?php if (isset($modifyLocationErrorMessage)) :?>
+        alert("<?= $modifyLocationErrorMessage ?>");
         <?php endif;?>
     }
 </script>
