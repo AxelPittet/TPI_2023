@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 09.05.2023
+ * save date : 16.05.2023
  */
 
 session_start();
@@ -37,6 +37,9 @@ if (isset($_GET['action'])) {
             break;
         case 'userLocations' :
             userLocations($_POST, $_FILES);
+            break;
+        case 'booking' :
+            booking($_POST);
             break;
         default :
             home();

@@ -2,12 +2,12 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 09.05.2023
+ * date : 16.05.2023
  */
 
 
 /**
- * This function is designed to register a new user account in the database
+ * This function is designed to register a new user account in the database.
  * @param $userEmailAddress
  * @param $userPsw
  * @param $userFirstName
@@ -29,7 +29,7 @@ function registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLa
 
 
 /**
- * This function is designed to return the type of the user which is currently logged in
+ * This function is designed to return the type of the user which is currently logged in.
  * @param $userEmailAddress
  * @return int|mixed : get the values of the query result
  */
@@ -51,7 +51,7 @@ function getUserType($userEmailAddress) {
 
 
 /**
- * This function is designed to check if the values of the login form are matching with an exisiting user
+ * This function is designed to check if the values of the login form are matching with an exisiting user.
  * @param $userEmailAddress
  * @param $userPsw
  * @return bool
@@ -81,11 +81,17 @@ function isLoginCorrect($userEmailAddress, $userPsw)
 }
 
 
-function emailAlreadyExists($userEmailAddress) {
+/**
+ * This function is designed to check if an email already exists in the users table in the database.
+ * @param $userEmailAddress
+ * @return bool : contain true if the email already exists or false if not
+ */
+function emailAlreadyExists($userEmailAddress)
+{
     $query = "SELECT * FROM users WHERE email = '$userEmailAddress'";
 
     require_once 'model/dbConnector.php';
-    if(empty(executeQuerySelect($query))) {
+    if (empty(executeQuerySelect($query))) {
         return false;
     } else {
         return true;

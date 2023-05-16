@@ -114,7 +114,7 @@
 <!-- footer-copyright end -->
 <script>
     var input = document.getElementById("inputSearch");
-    input.addEventListener("keypress", function(event) {
+    input.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             window.location.href = "index.php?action=search&search=" + input.value;
         }

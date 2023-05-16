@@ -60,7 +60,7 @@ ob_start();
 </div>
 
 <script>
-    window.onload = function showErrorMessage(){
+    window.onload = function showErrorMessage() {
         <?php if (isset($registerErrorMessage)) :?>
         alert("<?= $registerErrorMessage ?>");
         <?php endif;?>

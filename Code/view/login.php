@@ -42,7 +42,7 @@ ob_start();
         </div>
     </div>
     <script>
-        window.onload = function showErrorMessage(){
+        window.onload = function showErrorMessage() {
             <?php if (isset($loginErrorMessage)) :?>
             alert("<?= $loginErrorMessage ?>");
             <?php endif;?>

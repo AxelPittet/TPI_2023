@@ -38,16 +38,16 @@ ob_start();
                             </label>
                             <div class="input input-bordered flex w-full md:items-center">
                                 <label for="maison">
-                                    <span class="label-text">Maison :</span>
+                                    <span class="label-text mr-2">Maison :</span>
                                 </label>
                                 <input id="maison" type="radio" name="inputLocationHousingType" class="radio"
-                                       value="maison" required/>
+                                       value="Maison" required/>
                                 <div class="divider-horizontal"></div>
                                 <label for="appartement">
-                                    <span class="label-text">Appartement :</span>
+                                    <span class="label-text mr-2">Appartement :</span>
                                 </label>
                                 <input id="appartement" type="radio" name="inputLocationHousingType" class="radio"
-                                       value="appartement" required/>
+                                       value="Appartement" required/>
                             </div>
                         </div>
                         <br>

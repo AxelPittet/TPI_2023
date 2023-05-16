@@ -26,8 +26,14 @@ ob_start();
 
                         <h3 class="text-lg">Dates</h3><br>
                         <div class="flex w-full">
-                            <p class="label-text">Date de début : <input id="startDatepickerFilter" name="inputStartDate" class="input input-bordered" type="text" onchange="minEndDate(this.value)"></p>
-                            <p class="label-text">Date de fin : <input id="endDatepickerFilter" name="inputEndDate" class="input input-bordered" type="text"></p>
+                            <p class="label-text">Date de début : <input id="startDatepickerFilter"
+                                                                         name="inputStartDate"
+                                                                         class="input input-bordered" type="text"
+                                                                         autocomplete="off"
+                                                                         onchange="minEndDate(this.value)"></p>
+                            <p class="label-text">Date de fin : <input id="endDatepickerFilter" name="inputEndDate"
+                                                                       class="input input-bordered" type="text"
+                                                                       autocomplete="off"></p>
                         </div>
                         <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
 
@@ -117,8 +123,8 @@ ob_start();
         document.getElementById("clientsRangeValue").innerHTML = rangeValue;
     }
 
-    function minEndDate(startDateValue){
-        $( "#endDatepickerFilter" ).datepicker( "option", "minDate", startDateValue );
+    function minEndDate(startDateValue) {
+        $("#endDatepickerFilter").datepicker("option", "minDate", startDateValue);
     }
 
     $("#startDatepickerFilter").datepicker({
