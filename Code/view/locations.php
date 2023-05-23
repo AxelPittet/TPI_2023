@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 09.05.2023
+ * date : 22.05.2023
  */
 
 ob_start();
@@ -29,11 +29,11 @@ ob_start();
                             <p class="label-text">Date de début : <input id="startDatepickerFilter"
                                                                          name="inputStartDate"
                                                                          class="input input-bordered" type="text"
-                                                                         autocomplete="off"
+                                                                         autocomplete="off" readonly
                                                                          onchange="minEndDate(this.value)"></p>
                             <p class="label-text">Date de fin : <input id="endDatepickerFilter" name="inputEndDate"
                                                                        class="input input-bordered" type="text"
-                                                                       autocomplete="off"></p>
+                                                                       autocomplete="off" readonly></p>
                         </div>
                         <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
 
@@ -49,7 +49,7 @@ ob_start();
                             <span class="label-text">20</span>
                         </div>
                         <br>
-                        <p class="label-text">Value :
+                        <p class="label-text">Valeur :
                             <span id="clientsRangeValue">2</span></p>
                         <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
 
@@ -76,7 +76,9 @@ ob_start();
             <div class="divider-vertical"></div>
             <h1 class="text-5xl font-bold">Locations</h1>
             <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
-            <?php foreach ($locations
+            <?php
+            $count = 0;
+            foreach ($locations
 
                            as $location) :
                 $count += 1;
@@ -124,7 +126,10 @@ ob_start();
     }
 
     function minEndDate(startDateValue) {
-        $("#endDatepickerFilter").datepicker("option", "minDate", startDateValue);
+        var startDate = new Date(startDateValue);
+        var minEndDate = new Date(startDate.getTime() + (24 * 60 * 60 * 1000));
+
+        $("#endDatepickerFilter").datepicker("option", "minDate", minEndDate);
     }
 
     $("#startDatepickerFilter").datepicker({

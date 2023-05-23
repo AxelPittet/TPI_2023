@@ -2,22 +2,22 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 09.05.2023
+ * save date : 23.05.2023
  */
 
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="author" content="Axel Pittet">
     <meta name="description" content="This page is the gabarit of the site">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/view/css/output.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/view/js/jquery1_11_2.js"></script>
     <link rel="stylesheet"
           href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+    <script src="/view/js/jquery1_11_3.js"></script>
     <title>Loc'Habitat</title>
 </head>
 
@@ -60,6 +60,9 @@
                         <li><a href="index.php?action=login">S'authentifier</a></li>
                         <li><a href="index.php?action=register">Créer un compte</a></li>
                     <?php endif; ?>
+                    <?php if ($_SESSION['userType'] == 2) : ?>
+                        <li><a href="index.php?action=admin">Admin</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
             <a href="index.php?action=home" class="btn btn-ghost normal-case text-xl">Loc'Habitat</a>
@@ -94,6 +97,9 @@
                     <li><a href="index.php?action=login">S'authentifier</a></li>
                     <li><a href="index.php?action=register">Créer un compte</a></li>
                 <?php endif; ?>
+                <?php if ($_SESSION['userType'] == 2) : ?>
+                    <li><a href="index.php?action=admin">Admin</a></li>
+                <?php endif; ?>
             </ul>
             <br>
         </div>
@@ -106,7 +112,7 @@
 </div>
 
 <!-- footer-copyright start -->
-<footer class="bottom-0 left-0 z-20 w-full p-4 bg-white border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
+<footer class="bottom-0 left-0 z-20 w-full p-4 bg-base-100 border-t border-gray-200 shadow md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800 dark:border-gray-600">
     <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="index.php?action=home"
                                                                                     class="hover:underline">Loc'Habitat™</a>. All Rights Reserved.
     </span>

@@ -229,7 +229,7 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
         switch ($_GET['userLocationsFunction']) {
             case 'add' :
                 if (empty($userLocationsRequest)) {
-                    require "view/addLocation.php";
+                    require "view/addUserLocation.php";
                 } else {
                     $locationName = $userLocationsRequest['inputLocationName'];
                     $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
@@ -273,7 +273,7 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                                 require_once "model/imagesManager.php";
                                 if (imageAlreadyExists($filePath)) {
                                     $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
-                                    require "view/addLocation.php";
+                                    require "view/addUserLocation.php";
                                 }
                                 move_uploaded_file($tmpName, $filePath);
 
@@ -294,10 +294,11 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                             require "view/home.php";
                         } else {
                             $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
-                            require "view/addLocation.php";
+                            require "view/addUserLocation.php";
                         }
+                    } else {
+                        require "view/addUserLocation.php";
                     }
-                    require "view/addLocation.php";
                 }
                 break;
             case
@@ -307,14 +308,14 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                     $userId = getUserId($_SESSION['userEmailAddress']);
                     require_once "model/locationsManager.php";
                     $userLocations = getUserLocations($userId);
-                    require "view/modifyLocationChoice.php";
+                    require "view/modifyUserLocationChoice.php";
                 } else {
                     if (empty($userLocationsRequest['inputLocationPlace'])) {
                         require_once "model/locationsManager.php";
                         $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
                         require_once "model/imagesManager.php";
                         $locationImages = getLocationImages($location[0]['id']);
-                        require "view/modifyLocation.php";
+                        require "view/modifyUserLocation.php";
                     } else {
                         if (isset($userLocationsRequest['inputLocationExistingImage']) || isset($userLocationsFiles['inputLocationImage'])) {
                             $locationName = $userLocationsRequest['inputLocationName'];
@@ -363,7 +364,7 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                                             $location = getSpecificLocation($locationNumber);
                                             require_once "model/imagesManager.php";
                                             $locationImages = getLocationImages($location[0]['id']);
-                                            require "view/modifyLocation.php";
+                                            require "view/modifyUserLocation.php";
                                         }
                                         move_uploaded_file($tmpName, $filePath);
                                         $locationImages[] = $filePath;
@@ -389,14 +390,14 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                                     $location = getSpecificLocation($locationNumber);
                                     require_once "model/imagesManager.php";
                                     $locationImages = getLocationImages($location[0]['id']);
-                                    require "view/modifyLocation.php";
+                                    require "view/modifyUserLocation.php";
                                 }
                             } else {
                                 require_once "model/locationsManager.php";
                                 $location = getSpecificLocation($locationNumber);
                                 require_once "model/imagesManager.php";
                                 $locationImages = getLocationImages($location[0]['id']);
-                                require "view/modifyLocation.php";
+                                require "view/modifyUserLocation.php";
                             }
                         } else {
                             $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
@@ -404,7 +405,7 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                             $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
                             require_once "model/imagesManager.php";
                             $locationImages = getLocationImages($location[0]['id']);
-                            require "view/modifyLocation.php";
+                            require "view/modifyUserLocation.php";
                         }
                     }
                 }
@@ -418,6 +419,16 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                 foreach ($images as $image) {
                     deleteImage($image['name']);
                 }
+                $imagesToRemove = array();
+                foreach ($userLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
+                    $imagesToRemove[] = $inputLocationRemovedImage;
+                }
+                foreach ($imagesToRemove as $imageToRemove) {
+                    unlink($imageToRemove);
+                }
+                require_once "model/reservationsManager.php";
+                deleteReservation($locationId[0]['id']);
+                require_once "model/locationsManager.php";
                 deleteLocation($locationNumber);
                 require "view/home.php";
                 break;
@@ -442,7 +453,6 @@ function generateNumber()
 }
 
 
-function booking($bookRequest)
 function booking($bookingRequest)
 {
     $locationNumber = $_GET['locationNumber'];
