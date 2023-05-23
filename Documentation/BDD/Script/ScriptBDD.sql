@@ -8,21 +8,21 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema LocHabitat
+-- Schema lochab_apt_BDD
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema LocHabitat
+-- Schema lochab_apt_BDD
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `LocHabitat` DEFAULT CHARACTER SET utf8 ;
-USE `LocHabitat` ;
+CREATE SCHEMA IF NOT EXISTS `lochab_apt_BDD` DEFAULT CHARACTER SET utf8 ;
+USE `lochab_apt_BDD` ;
 
 -- -----------------------------------------------------
--- Table `LocHabitat`.`users`
+-- Table `lochab_apt_BDD`.`users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `LocHabitat`.`users` ;
+DROP TABLE IF EXISTS `lochab_apt_BDD`.`users` ;
 
-CREATE TABLE IF NOT EXISTS `LocHabitat`.`users` (
+CREATE TABLE IF NOT EXISTS `lochab_apt_BDD`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `lastname` VARCHAR(80) NOT NULL,
   `firstname` VARCHAR(80) NOT NULL,
@@ -36,11 +36,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `LocHabitat`.`locations`
+-- Table `lochab_apt_BDD`.`locations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `LocHabitat`.`locations` ;
+DROP TABLE IF EXISTS `lochab_apt_BDD`.`locations` ;
 
-CREATE TABLE IF NOT EXISTS `LocHabitat`.`locations` (
+CREATE TABLE IF NOT EXISTS `lochab_apt_BDD`.`locations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `locationNumber` INT NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -55,18 +55,18 @@ CREATE TABLE IF NOT EXISTS `LocHabitat`.`locations` (
   UNIQUE INDEX `locationNumber_UNIQUE` (`locationNumber` ASC) VISIBLE,
   CONSTRAINT `fk_locations_users1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `LocHabitat`.`users` (`id`)
+    REFERENCES `lochab_apt_BDD`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `LocHabitat`.`reservations`
+-- Table `lochab_apt_BDD`.`reservations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `LocHabitat`.`reservations` ;
+DROP TABLE IF EXISTS `lochab_apt_BDD`.`reservations` ;
 
-CREATE TABLE IF NOT EXISTS `LocHabitat`.`reservations` (
+CREATE TABLE IF NOT EXISTS `lochab_apt_BDD`.`reservations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `reservationNumber` INT NOT NULL,
   `startDate` DATE NOT NULL,
@@ -80,23 +80,23 @@ CREATE TABLE IF NOT EXISTS `LocHabitat`.`reservations` (
   UNIQUE INDEX `reservationNumber_UNIQUE` (`reservationNumber` ASC) VISIBLE,
   CONSTRAINT `fk_reservations_locations1`
     FOREIGN KEY (`location_id`)
-    REFERENCES `LocHabitat`.`locations` (`id`)
+    REFERENCES `lochab_apt_BDD`.`locations` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_reservations_users1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `LocHabitat`.`users` (`id`)
+    REFERENCES `lochab_apt_BDD`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `LocHabitat`.`images`
+-- Table `lochab_apt_BDD`.`images`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `LocHabitat`.`images` ;
+DROP TABLE IF EXISTS `lochab_apt_BDD`.`images` ;
 
-CREATE TABLE IF NOT EXISTS `LocHabitat`.`images` (
+CREATE TABLE IF NOT EXISTS `lochab_apt_BDD`.`images` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `location_id` INT NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `LocHabitat`.`images` (
   INDEX `fk_images_locations_idx` (`location_id` ASC) VISIBLE,
   CONSTRAINT `fk_images_locations`
     FOREIGN KEY (`location_id`)
-    REFERENCES `LocHabitat`.`locations` (`id`)
+    REFERENCES `lochab_apt_BDD`.`locations` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

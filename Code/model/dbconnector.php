@@ -64,12 +64,12 @@ function openDBConnexion()
     $tempDbConnexion = null;
 
     $sqlDriver = 'mysql';
-    $hostname = 'localhost';
+    $hostname = 'web24.swisscenter.com';
     $port = '3306';
     $charset = 'utf8';
-    $dbName = 'lochabitat';
-    $userName = 'LocHabitatAdmin';
-    $userPwd = 'Pa$$w0rd';
+    $dbName = 'lochab_apt_BDD';
+    $userName = 'lochab_apt_BDD';
+    $userPwd = 'Pa$$w0rdLocHabitat';
     $dsn = $sqlDriver . ':host=' . $hostname . ';dbname=' . $dbName . ';port=' . $port . ';charset=' . $charset;
 
     try {
