@@ -559,6 +559,19 @@ function booking($bookingRequest)
 
     }
 }
+
+
+/**
+ * This function is designed to display the right admin menu
+ * @param $adminRequest : contain some $_POST values for the use of CRUD forms
+ * @return void
+ */
+function admin($adminRequest, $adminFiles)
 {
+    if (empty($_GET['adminFunction'])) {
+        require "view/admin.php";
+    } else {
+    }
+}
 
 }
