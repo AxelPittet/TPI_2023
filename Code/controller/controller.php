@@ -439,6 +439,66 @@ function generateNumber()
 
 
 function booking($bookRequest)
+function booking($bookingRequest)
+{
+    $locationNumber = $_GET['locationNumber'];
+    if (empty($bookingRequest)) {
+        require_once "model/locationsManager.php";
+        $location = getSpecificLocation($locationNumber);
+        require "view/booking.php";
+    } else {
+        $startDate = $bookingRequest['inputStartDate'];
+        $startDate = date("Y-m-d", strtotime($startDate));
+        $endDate = $bookingRequest['inputEndDate'];
+        $endDate = date("Y-m-d", strtotime($endDate));
+        $totalPrice = $bookingRequest['inputTotalPrice'];
+        $reservationNumber = generateNumber();
+        require_once "model/reservationsManager.php";
+        while (reservationNumberAlreadyExists($reservationNumber) == true) {
+            $reservationNumber = generateNumber();
+        }
+        require_once "model/locationsManager.php";
+        $locationId = getLocationId($locationNumber);
+        require_once "model/usersManager.php";
+        $userId = getUserId($_SESSION['userEmailAddress']);
+        require_once "model/reservationsManager.php";
+        $locationReservations = getLocationReservations($locationId[0]['id']);
+
+        $userDateRange = new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            new DateTime($endDate)
+        );
+        foreach ($locationReservations as $locationReservedDateRange) {
+            $bddDateRange = new DatePeriod(
+                new DateTime($locationReservedDateRange['startDate']),
+                new DateInterval('P1D'),
+                new DateTime($locationReservedDateRange['endDate'])
+            );
+            foreach ($userDateRange as $userDate) {
+                foreach ($bddDateRange as $bddDate) {
+                    if ($userDate == $bddDate) {
+                        $reservationErrorMessage = "La réservation n'est pas possible avec les dates choisies, verifiez qu'aucune réservation déjà présente n'entrave la votre !";
+                        require_once "model/locationsManager.php";
+                        $location = getSpecificLocation($locationNumber);
+                        require "view/booking.php";
+                    }
+                }
+            }
+        }
+
+        if (bookLocation($reservationNumber, $startDate, $endDate, $totalPrice, $locationId[0]['id'], $userId)) {
+
+            require "view/home.php";
+        } else {
+            $reservationErrorMessage = "Une erreur est apparue, veuillez réessayer s'il vous plait.";
+            require_once "model/locationsManager.php";
+            $location = getSpecificLocation($locationNumber);
+            require "view/booking.php";
+        }
+
+    }
+}
 {
 
 }
