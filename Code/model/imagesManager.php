@@ -30,7 +30,7 @@ function imageAlreadyExists($imageName)
 {
     $query = "SELECT * FROM images WHERE name = '$imageName'";
 
-    require_once 'model/dbConnector.php';
+    require_once 'model/dbconnector.php';
     if (empty(executeQuerySelect($query))) {
         return false;
     } else {

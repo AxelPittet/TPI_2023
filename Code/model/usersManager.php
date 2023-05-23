@@ -63,7 +63,7 @@ function isLoginCorrect($userEmailAddress, $userPsw)
     $strSeparator = '\'';
     $loginQuery = 'SELECT * FROM users WHERE email = ' . $strSeparator . $userEmailAddress . $strSeparator;
 
-    require_once 'model/dbConnector.php';
+    require_once 'model/dbconnector.php';
     $queryResult = executeQuerySelect($loginQuery);
 
     if (count($queryResult) == 1) {

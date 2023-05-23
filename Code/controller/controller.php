@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 16.05.2023
+ * save date : 23.05.2023
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -107,7 +107,7 @@ function login($loginRequest)
 function logout()
 {
     session_destroy();
-    header('LOCATION:/home');
+    header('LOCATION:/index.php?action=home');
 }
 
 

@@ -150,7 +150,7 @@ function locationNumberAlreadyExists($locationNumber)
 {
     $query = "SELECT * FROM locations WHERE locationNumber = '$locationNumber'";
 
-    require_once 'model/dbConnector.php';
+    require_once 'model/dbconnector.php';
     if (empty(executeQuerySelect($query))) {
         return false;
     } else {
