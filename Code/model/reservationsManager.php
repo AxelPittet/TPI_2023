@@ -40,3 +40,11 @@ function bookLocation($reservationNumber, $startDate, $endDate, $price, $locatio
     $bookLocationResult = executeQueryIUD($bookLocationQuery);
     return $bookLocationResult;
 }
+
+
+function deleteReservation($locationId){
+    $deleteReservationQuery = "DELETE FROM reservations WHERE location_id = '$locationId';";
+    require_once "model/dbconnector.php";
+    $deleteReservationResult = executeQueryIUD($deleteReservationQuery);
+    return $deleteReservationResult;
+}

@@ -883,6 +883,28 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
                     }
                 }
                 break;
+            case 'delete' :
+                $locationNumber = $_GET['locationNumber'];
+                require_once "model/locationsManager.php";
+                $locationId = getLocationId($locationNumber);
+                require_once "model/imagesManager.php";
+                $images = getLocationImages($locationId[0]['id']);
+                foreach ($images as $image) {
+                    deleteImage($image['name']);
+                }
+                $imagesToRemove = array();
+                foreach ($adminLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
+                    $imagesToRemove[] = $inputLocationRemovedImage;
+                }
+                foreach ($imagesToRemove as $imageToRemove) {
+                    unlink($imageToRemove);
+                }
+                require_once "model/reservationsManager.php";
+                deleteReservation($locationId[0]['id']);
+                require_once "model/locationsManager.php";
+                deleteLocation($locationNumber);
+                require "view/home.php";
+                break;
         }
     }
 }
