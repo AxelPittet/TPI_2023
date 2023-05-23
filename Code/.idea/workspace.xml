@@ -10,7 +10,8 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/PHPMailer/composer.json</pharConfigPath>
     <execution />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -79,6 +80,10 @@
       <workItem from="1684130387495" duration="17886000" />
       <workItem from="1684216886152" duration="15352000" />
       <workItem from="1684242875916" duration="2608000" />
+      <workItem from="1684735303326" duration="10640000" />
+      <workItem from="1684747376175" duration="8326000" />
+      <workItem from="1684821591327" duration="8033000" />
+      <workItem from="1684835870388" duration="6047000" />
     </task>
     <servers />
   </component>
