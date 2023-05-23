@@ -634,6 +634,54 @@ function adminUsers($adminUsersRequest)
                     }
                 }
                 break;
+            case 'modify' :
+                if (empty($adminUsersRequest)) {
+                    require_once "model/usersManager.php";
+                    $users = getUsers();
+                    require "view/modifyUserChoice.php";
+                } else {
+                    if (empty($adminUsersRequest['inputUserFirstName'])) {
+                        require_once "model/usersManager.php";
+                        $user = getUser($adminUsersRequest['inputUserEmailAddress']);
+                        require "view/modifyUser.php";
+                    } else {
+                        $userFirstName = $adminUsersRequest ['inputUserFirstName'];
+                        $userLastName = $adminUsersRequest ['inputUserLastName'];
+                        $userPhoneNumber = $adminUsersRequest ['inputUserPhoneNumber'];
+                        $userEmailAddress = $adminUsersRequest['inputUserEmailAddress'];
+                        $userId = $adminUsersRequest['inputUserId'];
+
+                        $testsPassed = false;
+                        require_once "model/usersManager.php";
+                        if (strlen($userPhoneNumber) > 14) {
+                            $modifyUserErrorMessage = "Le n° de téléphone n'est pas valide !";
+                        } else if (strlen($userFirstName) > 80) {
+                            $modifyUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($userLastName) > 80) {
+                            $modifyUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                        } else if (emailAlreadyExists($userEmailAddress)) {
+                            $modifyUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+                        } else {
+                            $testsPassed = true;
+                        }
+
+                        require_once "model/usersManager.php";
+                        if ($testsPassed) {
+                            if (updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhoneNumber, $userId)) {
+                                home();
+                            } else {
+                                $modifyUserErrorMessage = "La modification a rencontré une erreur, merci de réessayer.";
+                                require_once "model/usersManager.php";
+                                $users = getUsers();
+                                require "view/modifyUserChoice.php";
+                            }
+                        } else {
+                            $users = getUsers();
+                            require "view/modifyUserChoice.php";
+                        }
+                    }
+                }
+                break;
             default :
                 break;
         }

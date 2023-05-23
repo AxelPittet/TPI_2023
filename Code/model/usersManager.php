@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 16.05.2023
+ * date : 23.05.2023
  */
 
 
@@ -90,7 +90,7 @@ function emailAlreadyExists($userEmailAddress)
 {
     $query = "SELECT * FROM users WHERE email = '$userEmailAddress'";
 
-    require_once 'model/dbConnector.php';
+    require_once 'model/dbconnector.php';
     if (empty(executeQuerySelect($query))) {
         return false;
     } else {
@@ -117,5 +117,57 @@ function getUserId($userEmailAddress) {
         $result = $queryResult[0]['id'];
     }
 
+
+
+function getUserEmailAddress($userId){
+    $getUserTypeQuery = "SELECT email FROM users WHERE id = '$userId'";
+
+    require_once 'model/dbconnector.php';
+    $getUserTypeResult = executeQuerySelect($getUserTypeQuery);
+    return $getUserTypeResult;
+}
+
+
+/**
+ * This function is designed to return the values of the users table in the database in an array
+ * @return array|null : get the values of the query result
+ */
+function getUsers(){
+    $getUsersQuery = 'SELECT * FROM users';
+    require_once "model/dbconnector.php";
+    $users = executeQuerySelect($getUsersQuery);
+    return $users;
+}
+
+
+/**
+ * This function is designed to return the values of a specific row in the users table in the database
+ * @param $userEmailAddress : must contain the email of the user which we want the informations
+ * @return array|null : get the values of the query result
+ */
+function getUser($userEmailAddress){
+    $strSeparator = '\'';
+    $getUserQuery = 'SELECT * FROM users WHERE email = ' . $strSeparator . $userEmailAddress . $strSeparator;
+    require_once "model/dbconnector.php";
+    $user = executeQuerySelect($getUserQuery);
+    return $user;
+}
+
+
+/**
+ * This function is designed to update the values of a specific row in the users table in the database
+ * @param $userEmailAddress
+ * @param $userFirstName
+ * @param $userLastName
+ * @param $userPhoneNumber
+ * @param $userId
+ * @return bool|null
+ */
+function updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhoneNumber, $userId){
+    $updateUserQuery = "UPDATE users SET lastname='$userLastName', firstname = '$userFirstName', email = '$userEmailAddress', phonenumber = '$userPhoneNumber' WHERE id = '$userId'";
+    require_once "model/dbconnector.php";
+    $result = executeQueryIUD($updateUserQuery);
+    return $result;
+}
     return $result;
 }
