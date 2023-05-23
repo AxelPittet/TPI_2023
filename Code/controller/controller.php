@@ -777,6 +777,112 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
                     }
                 }
                 break;
+            case
+            'modify' :
+                if (empty($adminLocationsRequest)) {
+                    require_once "model/locationsManager.php";
+                    $locations = getLocations();
+                    require "view/modifyAdminLocationChoice.php";
+                } else {
+                    if (empty($adminLocationsRequest['inputLocationPlace'])) {
+                        require_once "model/locationsManager.php";
+                        $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
+                        require_once "model/imagesManager.php";
+                        $locationImages = getLocationImages($location[0]['id']);
+                        require "view/modifyAdminLocation.php";
+                    } else {
+                        if (isset($adminLocationsRequest['inputLocationExistingImage']) || isset($adminLocationsFiles['inputLocationImage'])) {
+                            $locationName = $adminLocationsRequest['inputLocationName'];
+                            $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                            $locationPlace = $adminLocationsRequest['inputLocationPlace'];
+                            $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                            $locationDescription = $adminLocationsRequest['inputLocationDescription'];
+                            $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                            $locationHousingType = $adminLocationsRequest['inputLocationHousingType'];
+                            $locationClientsNb = $adminLocationsRequest['inputLocationClientsNb'];
+                            $locationPrice = $adminLocationsRequest['inputLocationPrice'];
+                            $locationNumber = $adminLocationsRequest['inputLocationNumber'];
+                            $imagesToRemove = array();
+                            foreach ($adminLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
+                                $imagesToRemove[] = $inputLocationRemovedImage;
+                            }
+
+                            $testsPassed = false;
+                            if (strlen($locationName) > 100) {
+                                $modifyLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationPlace) > 130) {
+                                $modifyLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationDescription) > 500) {
+                                $modifyLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($locationClientsNb) > 10) {
+                                $modifyLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                            } else if (strlen($locationPrice) > 7) {
+                                $modifyLocationErrorMessage = "Le prix est trop élevé !";
+                            } else {
+                                $testsPassed = true;
+                            }
+
+                            if ($testsPassed) {
+                                $locationImages = array();
+                                $uploadDir = "view/img/";
+                                foreach ($adminLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                    if ($adminLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                        $fileName = $adminLocationsFiles['inputLocationImage']['name'][$index];
+                                        $filePath = $uploadDir . $fileName;
+
+                                        require_once "model/imagesManager.php";
+                                        if (imageAlreadyExists($filePath)) {
+                                            $modifyLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                            require_once "model/locationsManager.php";
+                                            $location = getSpecificLocation($locationNumber);
+                                            require_once "model/imagesManager.php";
+                                            $locationImages = getLocationImages($location[0]['id']);
+                                            require "view/modifyAdminLocation.php";
+                                        }
+                                        move_uploaded_file($tmpName, $filePath);
+                                        $locationImages[] = $filePath;
+                                    }
+                                }
+                                require "model/locationsManager.php";
+                                if (modifyLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice)) {
+                                    foreach ($imagesToRemove as $imageToRemove) {
+                                        require_once "model/imagesManager.php";
+                                        deleteImage($imageToRemove);
+                                        unlink($imageToRemove);
+                                    }
+                                    require_once "model/locationsManager.php";
+                                    $locationId = getLocationId($locationNumber);
+                                    require_once "model/imagesManager.php";
+                                    foreach ($locationImages as $locationImage) {
+                                        addLocationImages($locationImage, $locationId[0][0]);
+                                    }
+                                    require "view/home.php";
+                                } else {
+                                    $modifyLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                    require_once "model/locationsManager.php";
+                                    $location = getSpecificLocation($locationNumber);
+                                    require_once "model/imagesManager.php";
+                                    $locationImages = getLocationImages($location[0]['id']);
+                                    require "view/modifyAdminLocation.php";
+                                }
+                            } else {
+                                require_once "model/locationsManager.php";
+                                $location = getSpecificLocation($locationNumber);
+                                require_once "model/imagesManager.php";
+                                $locationImages = getLocationImages($location[0]['id']);
+                                require "view/modifyAdminLocation.php";
+                            }
+                        } else {
+                            $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
+                            require_once "model/locationsManager.php";
+                            $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
+                            require_once "model/imagesManager.php";
+                            $locationImages = getLocationImages($location[0]['id']);
+                            require "view/modifyAdminLocation.php";
+                        }
+                    }
+                }
+                break;
         }
     }
 }
