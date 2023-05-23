@@ -117,6 +117,8 @@ function getUserId($userEmailAddress) {
         $result = $queryResult[0]['id'];
     }
 
+    return $result;
+}
 
 
 function getUserEmailAddress($userId){
@@ -169,5 +171,16 @@ function updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhone
     $result = executeQueryIUD($updateUserQuery);
     return $result;
 }
+
+
+/**
+ * This function is designed to delete the values of a specific row in the users table in the database
+ * @param $userId
+ * @return bool|null
+ */
+function deleteUser($userId){
+    $deleteUserQuery = "DELETE FROM users WHERE id = '$userId'";
+    require_once "model/dbconnector.php";
+    $result = executeQueryIUD($deleteUserQuery);
     return $result;
 }

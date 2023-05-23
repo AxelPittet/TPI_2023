@@ -682,6 +682,12 @@ function adminUsers($adminUsersRequest)
                     }
                 }
                 break;
+            case 'delete' :
+                $userId = $_GET['userId'];
+                require_once "model/usersManager.php";
+                deleteUser($userId);
+                home();
+                break;
             default :
                 break;
         }
