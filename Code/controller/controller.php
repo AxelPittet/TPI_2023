@@ -575,6 +575,9 @@ function admin($adminRequest, $adminFiles)
             case 'users' :
                 adminUsers($adminRequest);
                 break;
+            case 'locations' :
+                adminLocations($adminRequest, $adminFiles);
+                break;
             default :
                 break;
         }
@@ -693,4 +696,13 @@ function adminUsers($adminUsersRequest)
         }
     }
 }
+
+
+function adminLocations($adminLocationsRequest, $adminLocationsFiles)
+{
+    if (empty($_GET['adminLocationsFunction'])) {
+        require "view/locationsAdmin.php";
+    } else {
+        }
+    }
 }
