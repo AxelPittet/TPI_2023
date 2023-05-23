@@ -5,6 +5,10 @@
  * save date : 16.05.2023
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * This function is designed to display the "home" view
  * @return void
@@ -488,6 +492,62 @@ function booking($bookingRequest)
         }
 
         if (bookLocation($reservationNumber, $startDate, $endDate, $totalPrice, $locationId[0]['id'], $userId)) {
+
+            require_once "model/locationsManager.php";
+            $location = getSpecificLocation($locationNumber);
+            $location = $location[0];
+            require_once "model/usersManager.php";
+            $userEmailAddress = getUserEmailAddress($userId);
+
+            require 'PHPMailer/src/Exception.php';
+            require 'PHPMailer/src/PHPMailer.php';
+            require 'PHPMailer/src/SMTP.php';
+
+            $mail = new PHPMailer(TRUE);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'mail01.swisscenter.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'confirmation@lochabitat.mycpnv.ch';
+                $mail->Password = 'Pa$$w0rdLocHabitat';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                $mail->setFrom('confirmation@lochabitat.mycpnv.ch', 'LocHabitat Confirmation');
+                $mail->addAddress($_SESSION['userEmailAddress']);
+
+                $mail->isHTML(true);
+                $mail->Subject = "Confirmation de commande n " . $reservationNumber;
+                $mail->Body = "Vous avez reservez la location " . $location['name'] . " du " . $startDate . " au " . $endDate . " pour le prix de " . $totalPrice . "CHF.";
+                $mail->AltBody = "Vous avez reservez la location " . $location['name'] . " du " . $startDate . " au " . $endDate . " pour le prix de " . $totalPrice . "CHF.";
+
+                $mail->send();
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
+
+            $mail = new PHPMailer(TRUE);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'mail01.swisscenter.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'confirmation@lochabitat.mycpnv.ch';
+                $mail->Password = 'Pa$$w0rdLocHabitat';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                $mail->setFrom('confirmation@lochabitat.mycpnv.ch', 'LocHabitat Confirmation');
+                $mail->addAddress($userEmailAddress[0]['email']);
+
+                $mail->isHTML(true);
+                $mail->Subject = "Reservation de la location n " . $locationNumber;
+                $mail->Body = "Votre location " . $location['name'] . " a ete reservee du " . $startDate . " au " . $endDate . " pour un prix total de " . $totalPrice . " CHF qui vous seront prochainement verses.";
+                $mail->AltBody = "Votre location " . $location['name'] . " a ete reservee du " . $startDate . " au " . $endDate . " pour un prix total de " . $totalPrice . " CHF qui vous seront prochainement verses.";
+
+                $mail->send();
+            } catch (Exception $e) {
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            }
 
             require "view/home.php";
         } else {

@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 09.05.2023
+ * date : 22.05.2023
  */
 
 ob_start();
@@ -22,7 +22,7 @@ ob_start();
                 <div class="divider-vertical"></div>
 
                 <div class="flex w-full md:items-center">
-                    <?php if ($images[1] != '') :
+                    <?php if (isset($images[1])) :
                         ?>
                         <div class="carousel h-1/2 w-1/2">
                             <?php
@@ -60,7 +60,7 @@ ob_start();
                 <?php
                 if (isset($_SESSION['userEmailAddress'])) :
                     ?>
-                    <a href="index.php?action=reserv">
+                    <a href="index.php?action=booking&locationNumber=<?= $item['locationNumber'] ?>">
                         <button class="btn btn-primary">Réservez dès maintenant !</button>
                     </a>
                 <?php
