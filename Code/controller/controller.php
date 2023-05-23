@@ -571,7 +571,72 @@ function admin($adminRequest, $adminFiles)
     if (empty($_GET['adminFunction'])) {
         require "view/admin.php";
     } else {
+        switch ($_GET['adminFunction']) {
+            case 'users' :
+                adminUsers($adminRequest);
+                break;
+            default :
+                break;
+        }
     }
 }
 
+
+/**
+ * This function is designed to display the right users CRUD menu / form
+ * @param $adminUsersRequest : contain some $_POST values for the use of the users CRUD forms
+ * @return void
+ */
+function adminUsers($adminUsersRequest)
+{
+    if (empty($_GET['usersFunction'])) {
+        require "view/usersAdmin.php";
+    } else {
+        switch ($_GET['usersFunction']) {
+            case 'add' :
+                if (empty($adminUsersRequest)) {
+                    require "view/addUser.php";
+                } else {
+                    $userFirstName = $adminUsersRequest ['inputUserFirstName'];
+                    $userLastName = $adminUsersRequest ['inputUserLastName'];
+                    $userPhoneNumber = $adminUsersRequest ['inputUserPhoneNumber'];
+                    $userEmailAddress = $adminUsersRequest['inputUserEmailAddress'];
+                    $userPsw = $adminUsersRequest['inputUserPsw'];
+                    $userConfirmPsw = $adminUsersRequest['inputUserConfirmPsw'];
+
+                    $testsPassed = false;
+                    require_once "model/usersManager.php";
+                    if (strlen($userPhoneNumber) > 14) {
+                        $addUserErrorMessage = "Le n° de téléphone n'est pas valide !";
+                    } else if (strlen($userFirstName) > 80) {
+                        $addUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+                    } else if (strlen($userLastName) > 80) {
+                        $addUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                    } else if (emailAlreadyExists($userEmailAddress)) {
+                        $addUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+                    } else if ($userPsw != $userConfirmPsw) {
+                        $addUserErrorMessage = "Les mots de passe ne correspondent pas !";
+                    } else {
+                        $testsPassed = true;
+                    }
+
+                    if ($testsPassed) {
+                        require_once "model/usersManager.php";
+                        if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
+                            $addUserErrorMessage = null;
+                            home();
+                        } else {
+                            $addUserErrorMessage = "L'ajout a rencontré une erreur, merci de réessayer.";
+                            require "view/addUser.php";
+                        }
+                    } else {
+                        require "view/addUser.php";
+                    }
+                }
+                break;
+            default :
+                break;
+        }
+    }
+}
 }
