@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 23.05.2023
+ * save date : 25.05.2023
  */
 
 ob_start();
@@ -30,39 +30,34 @@ ob_start();
                 <div class="divider-vertical"></div>
                 <h1 class="text-5xl font-bold">Locations en vedette</h1>
                 <br>
-                <div class="carousel w-full">
-                    <div id="slide1" class="carousel-item relative w-full">
-                        <img src="view/img/chateau.jpg" class="w-full rounded-box"/>
-                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                            <a href="#slide4" class="btn btn-circle">❮</a>
-                            <a href="#slide2" class="btn btn-circle">❯</a>
-                        </div>
-                    </div>
-                    <div id="slide2" class="carousel-item relative w-full">
-                        <img src="view/img/chateau.jpg" class="w-full rounded-box"/>
-                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                            <a href="#slide1" class="btn btn-circle">❮</a>
-                            <a href="#slide3" class="btn btn-circle">❯</a>
-                        </div>
-                    </div>
-                    <div id="slide3" class="carousel-item relative w-full">
-                        <img src="view/img/chateau.jpg" class="w-full rounded-box"/>
-                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                            <a href="#slide2" class="btn btn-circle">❮</a>
-                            <a href="#slide4" class="btn btn-circle">❯</a>
-                        </div>
-                    </div>
-                    <div id="slide4" class="carousel-item relative w-full">
-                        <img src="view/img/chateau.jpg" class="w-full rounded-box"/>
-                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                            <a href="#slide3" class="btn btn-circle">❮</a>
-                            <a href="#slide1" class="btn btn-circle">❯</a>
-                        </div>
-                    </div>
+                <div class="carousel max-h-96">
+                    <?php
+                    $count = 1;
+                    foreach ($locations as $location) :
+                        $images = explode(',', $location['imageNames']);
+                        if ($count < 5) :
+                            ?>
+                            <div id="slide<?= $count ?>" class="carousel-item relative w-full">
+                                <img src="<?= $images[0] ?>" class="object-contain w-full"/>
+                                <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                    <a href="#slide<?= $count - 1 ?>" class="btn btn-circle">❮</a>
+                                    <a href="#slide<?= $count + 1 ?>" class="btn btn-circle">❯</a>
+                                </div>
+                                <a class="absolute flex justify-between transform -translate-x-1/2 bottom-1 left-1/2"
+                                   href="index.php?action=showLocation&locationNumber=<?= $location['locationNumber'] ?>">
+                                    <button class="btn btn-primary">Accéder</button>
+                                </a>
+                            </div>
+                            <?php
+                            $count += 1;
+                        endif;
+                    endforeach;
+                    ?>
                 </div>
             </div>
         </div>
     </div>
+
 <?php
 $content = ob_get_clean();
 require "gabarit.php";

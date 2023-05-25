@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 23.05.2023
+ * save date : 25.05.2023
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -15,6 +15,8 @@ use PHPMailer\PHPMailer\Exception;
  */
 function home()
 {
+    require_once "model/locationsManager.php";
+    $locations = getLocations();
     require "view/home.php";
 }
 
