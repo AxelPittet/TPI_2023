@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 23.05.2023
+ * save date : 25.05.2023
  */
 
 ?>
@@ -14,6 +14,7 @@
     <meta name="description" content="This page is the gabarit of the site">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/view/css/output.css" rel="stylesheet">
+    <link href="/view/css/build.css" rel="stylesheet">
     <script src="/view/js/jquery1_11_2.js"></script>
     <link rel="stylesheet"
           href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css"/>
