@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 22.05.2023
+ * date : 25.05.2023
  */
 
 ob_start();
@@ -80,7 +80,7 @@ ob_start();
             $count = 0;
             foreach ($locations
 
-                           as $location) :
+                     as $location) :
                 $count += 1;
                 $images = explode(',', $location['imageNames']);
                 if ($count == 1) :
@@ -90,7 +90,7 @@ ob_start();
                 endif;
                 ?>
                 <a href="index.php?action=showLocation&locationNumber=<?= $location['locationNumber'] ?>">
-                    <div class="card card-compact bg-base-100 shadow-xl">
+                    <div class="card card-compact bg-base-100 shadow-xl max-h-80 min-h-full">
                         <figure><img src="<?= $images[0] ?>" alt="<?= $location['name'] ?>" class="w-96"/>
                         </figure>
                         <div class="card-body">

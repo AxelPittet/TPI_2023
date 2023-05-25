@@ -28,42 +28,44 @@ function home()
  */
 function register($registerRequest)
 {
-    if (isset($registerRequest['inputUserEmailAddress']) && isset($registerRequest['inputUserPsw']) && isset($registerRequest['inputUserConfirmPsw'])
-        && isset($registerRequest['inputUserFirstName']) && isset($registerRequest['inputUserLastName']) && isset($registerRequest['inputUserPhoneNumber'])) {
+    if (!empty($registerRequest)) {
+        if (!in_array("", $registerRequest)) {
 
-        $userFirstName = $registerRequest ['inputUserFirstName'];
-        $userLastName = $registerRequest ['inputUserLastName'];
-        $userPhoneNumber = $registerRequest ['inputUserPhoneNumber'];
-        $userEmailAddress = $registerRequest['inputUserEmailAddress'];
-        $userPsw = $registerRequest['inputUserPsw'];
-        $userConfirmPsw = $registerRequest['inputUserConfirmPsw'];
+            $userFirstName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $registerRequest ['inputUserFirstName']);
+            $userLastName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'),$registerRequest ['inputUserLastName']);
+            $userPhoneNumber = $registerRequest ['inputUserPhoneNumber'];
+            $userEmailAddress = $registerRequest['inputUserEmailAddress'];
+            $userPsw = $registerRequest['inputUserPsw'];
+            $userConfirmPsw = $registerRequest['inputUserConfirmPsw'];
 
-        $testsPassed = false;
-        //form data verification
-        require_once "model/usersManager.php";
-        if (strlen($userPhoneNumber) > 14) {
-            $registerErrorMessage = "Le n° de téléphone n'est pas valide !";
-        } else if (strlen($userFirstName) > 80) {
-            $registerErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
-        } else if (strlen($userLastName) > 80) {
-            $registerErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-        } else if (emailAlreadyExists($userEmailAddress)) {
-            $registerErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
-        } else if ($userPsw != $userConfirmPsw) {
-            $registerErrorMessage = "Les mots de passe ne correspondent pas !";
-        } else {
-            $testsPassed = true;
-        }
-
-        if ($testsPassed) {
+            $testsPassed = false;
             require_once "model/usersManager.php";
-            if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
-                $userType = getUserType($userEmailAddress);
-                createSession($userEmailAddress, $userType);
-                $registerErrorMessage = null;
-                home();
+            if (strlen($userPhoneNumber) > 14) {
+                $registerErrorMessage = "Le n° de téléphone n'est pas valide !";
+            } else if (strlen($userFirstName) > 80) {
+                $registerErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+            } else if (strlen($userLastName) > 80) {
+                $registerErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+            } else if (emailAlreadyExists($userEmailAddress)) {
+                $registerErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+            } else if ($userPsw != $userConfirmPsw) {
+                $registerErrorMessage = "Les mots de passe ne correspondent pas !";
             } else {
-                $registerErrorMessage = "L'inscription n'est pas possible avec les valeurs saisies !";
+                $testsPassed = true;
+            }
+
+            if ($testsPassed) {
+                require_once "model/usersManager.php";
+                if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
+                    $userType = getUserType($userEmailAddress);
+                    createSession($userEmailAddress, $userType);
+                    $registerErrorMessage = null;
+                    home();
+                } else {
+                    $registerErrorMessage = "L'inscription n'est pas possible avec les valeurs saisies !";
+                    require "view/register.php";
+                }
+            } else {
                 require "view/register.php";
             }
         } else {
@@ -82,21 +84,25 @@ function register($registerRequest)
  */
 function login($loginRequest)
 {
-    if (isset($loginRequest['inputUserEmailAddress']) && isset($loginRequest['inputUserPsw'])) {
-        $userEmailAddress = $loginRequest['inputUserEmailAddress'];
-        $userPsw = $loginRequest['inputUserPsw'];
-        require_once "model/usersManager.php";
-        if (isLoginCorrect($userEmailAddress, $userPsw)) {
-            $userType = getUserType($userEmailAddress);
-            createSession($userEmailAddress, $userType);
-            $loginErrorMessage = null;
-            home();
+    if (!empty($loginRequest)) {
+        if (!in_array("", $loginRequest)) {
+            $userEmailAddress = $loginRequest['inputUserEmailAddress'];
+            $userPsw = $loginRequest['inputUserPsw'];
+            require_once "model/usersManager.php";
+            if (isLoginCorrect($userEmailAddress, $userPsw)) {
+                $userType = getUserType($userEmailAddress);
+                createSession($userEmailAddress, $userType);
+                $loginErrorMessage = null;
+                home();
+            } else {
+                $loginErrorMessage = "Cette combinaison n'existe pas !";
+                require "view/login.php";
+            }
         } else {
-            $loginErrorMessage = "Cette combinaison n'existe pas !";
+            $loginErrorMessage = null;
             require "view/login.php";
         }
     } else {
-        $loginErrorMessage = null;
         require "view/login.php";
     }
 }
@@ -230,164 +236,175 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
     } else {
         switch ($_GET['userLocationsFunction']) {
             case 'add' :
-                if (empty($userLocationsRequest)) {
-                    require "view/addUserLocation.php";
-                } else {
-                    $locationName = $userLocationsRequest['inputLocationName'];
-                    $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
-                    $locationPlace = $userLocationsRequest['inputLocationPlace'];
-                    $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
-                    $locationDescription = $userLocationsRequest['inputLocationDescription'];
-                    $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
-                    $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
-                    $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
-                    $locationPrice = $userLocationsRequest['inputLocationPrice'];
-                    $locationNumber = generateNumber();
-                    require_once "model/locationsManager.php";
-                    while (locationNumberAlreadyExists($locationNumber) == true) {
-                        $locationNumber = generateNumber();
-                    }
-
-                    $testsPassed = false;
-                    //form data verification
-                    if (strlen($locationName) > 100) {
-                        $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationPlace) > 130) {
-                        $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationDescription) > 500) {
-                        $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationClientsNb) > 10) {
-                        $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
-                    } else if (strlen($locationPrice) > 7) {
-                        $addLocationErrorMessage = "Le prix est trop élevé !";
+                if (!empty($userLocationsRequest)) {
+                    if (in_array("", $userLocationsRequest)) {
+                        require "view/addUserLocation.php";
                     } else {
-                        $testsPassed = true;
-                    }
-
-                    if ($testsPassed) {
-                        $locationImages = array();
-                        $uploadDir = "view/img/";
-                        foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
-                            if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
-                                $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
-                                $filePath = $uploadDir . $fileName;
-
-                                require_once "model/imagesManager.php";
-                                if (imageAlreadyExists($filePath)) {
-                                    $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
-                                    require "view/addUserLocation.php";
-                                }
-                                move_uploaded_file($tmpName, $filePath);
-
-                                $locationImages[] = $filePath;
-                            }
+                        $locationName = $userLocationsRequest['inputLocationName'];
+                        $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                        $locationPlace = $userLocationsRequest['inputLocationPlace'];
+                        $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                        $locationDescription = $userLocationsRequest['inputLocationDescription'];
+                        $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                        $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
+                        $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
+                        $locationPrice = $userLocationsRequest['inputLocationPrice'];
+                        $locationNumber = generateNumber();
+                        require_once "model/locationsManager.php";
+                        while (locationNumberAlreadyExists($locationNumber) == true) {
+                            $locationNumber = generateNumber();
                         }
 
-                        require_once "model/usersManager.php";
-                        $userId = getUserId($_SESSION['userEmailAddress']);
-
-                        require_once "model/locationsManager.php";
-                        if (addLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice, $userId)) {
-                            $locationId = getLocationId($locationNumber);
-                            require_once "model/imagesManager.php";
-                            foreach ($locationImages as $locationImage) {
-                                addLocationImages($locationImage, $locationId[0][0]);
-                            }
-                            require "view/home.php";
+                        $testsPassed = false;
+                        //form data verification
+                        if (strlen($locationName) > 100) {
+                            $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationPlace) > 130) {
+                            $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationDescription) > 500) {
+                            $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationClientsNb) > 10) {
+                            $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                        } else if (strlen($locationPrice) > 7) {
+                            $addLocationErrorMessage = "Le prix est trop élevé !";
                         } else {
-                            $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                            $testsPassed = true;
+                        }
+
+                        if ($testsPassed) {
+                            $locationImages = array();
+                            $uploadDir = "view/img/";
+                            foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                    $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
+                                    $filePath = $uploadDir . $fileName;
+
+                                    require_once "model/imagesManager.php";
+                                    if (imageAlreadyExists($filePath)) {
+                                        $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                        require "view/addUserLocation.php";
+                                    }
+                                    move_uploaded_file($tmpName, $filePath);
+
+                                    $locationImages[] = $filePath;
+                                }
+                            }
+
+                            require_once "model/usersManager.php";
+                            $userId = getUserId($_SESSION['userEmailAddress']);
+
+                            require_once "model/locationsManager.php";
+                            if (addLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice, $userId)) {
+                                $locationId = getLocationId($locationNumber);
+                                require_once "model/imagesManager.php";
+                                foreach ($locationImages as $locationImage) {
+                                    addLocationImages($locationImage, $locationId[0][0]);
+                                }
+                                home();
+                            } else {
+                                $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                require "view/addUserLocation.php";
+                            }
+                        } else {
                             require "view/addUserLocation.php";
                         }
-                    } else {
-                        require "view/addUserLocation.php";
                     }
+                } else {
+                    require "view/addUserLocation.php";
                 }
                 break;
             case
             'modify' :
-                if (empty($userLocationsRequest)) {
-                    require_once "model/usersManager.php";
-                    $userId = getUserId($_SESSION['userEmailAddress']);
-                    require_once "model/locationsManager.php";
-                    $userLocations = getUserLocations($userId);
-                    require "view/modifyUserLocationChoice.php";
-                } else {
-                    if (empty($userLocationsRequest['inputLocationPlace'])) {
+                if (!empty($userLocationsRequest)) {
+                    if (in_array("", $userLocationsRequest)) {
+                        require_once "model/usersManager.php";
+                        $userId = getUserId($_SESSION['userEmailAddress']);
                         require_once "model/locationsManager.php";
-                        $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
-                        require_once "model/imagesManager.php";
-                        $locationImages = getLocationImages($location[0]['id']);
-                        require "view/modifyUserLocation.php";
+                        $userLocations = getUserLocations($userId);
+                        require "view/modifyUserLocationChoice.php";
                     } else {
-                        if (isset($userLocationsRequest['inputLocationExistingImage']) || isset($userLocationsFiles['inputLocationImage'])) {
-                            $locationName = $userLocationsRequest['inputLocationName'];
-                            $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
-                            $locationPlace = $userLocationsRequest['inputLocationPlace'];
-                            $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
-                            $locationDescription = $userLocationsRequest['inputLocationDescription'];
-                            $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
-                            $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
-                            $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
-                            $locationPrice = $userLocationsRequest['inputLocationPrice'];
-                            $locationNumber = $userLocationsRequest['inputLocationNumber'];
-                            $imagesToRemove = array();
-                            foreach ($userLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
-                                $imagesToRemove[] = $inputLocationRemovedImage;
-                            }
-
-                            $testsPassed = false;
-                            //form data verification
-                            if (strlen($locationName) > 100) {
-                                $modifyLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationPlace) > 130) {
-                                $modifyLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationDescription) > 500) {
-                                $modifyLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationClientsNb) > 10) {
-                                $modifyLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
-                            } else if (strlen($locationPrice) > 7) {
-                                $modifyLocationErrorMessage = "Le prix est trop élevé !";
-                            } else {
-                                $testsPassed = true;
-                            }
-
-                            if ($testsPassed) {
-                                $locationImages = array();
-                                $uploadDir = "view/img/";
-                                foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
-                                    if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
-                                        $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
-                                        $filePath = $uploadDir . $fileName;
-
-                                        require_once "model/imagesManager.php";
-                                        if (imageAlreadyExists($filePath)) {
-                                            $modifyLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
-                                            require_once "model/locationsManager.php";
-                                            $location = getSpecificLocation($locationNumber);
-                                            require_once "model/imagesManager.php";
-                                            $locationImages = getLocationImages($location[0]['id']);
-                                            require "view/modifyUserLocation.php";
-                                        }
-                                        move_uploaded_file($tmpName, $filePath);
-                                        $locationImages[] = $filePath;
-                                    }
+                        if ($userLocationsRequest['inputLocationPlace'] == null) {
+                            require_once "model/locationsManager.php";
+                            $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
+                            require_once "model/imagesManager.php";
+                            $locationImages = getLocationImages($location[0]['id']);
+                            require "view/modifyUserLocation.php";
+                        } else {
+                            if ($userLocationsRequest['inputLocationExistingImage'] == null || $userLocationsFiles['inputLocationImage'] == null) {
+                                $locationName = $userLocationsRequest['inputLocationName'];
+                                $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                                $locationPlace = $userLocationsRequest['inputLocationPlace'];
+                                $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                                $locationDescription = $userLocationsRequest['inputLocationDescription'];
+                                $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                                $locationHousingType = $userLocationsRequest['inputLocationHousingType'];
+                                $locationClientsNb = $userLocationsRequest['inputLocationClientsNb'];
+                                $locationPrice = $userLocationsRequest['inputLocationPrice'];
+                                $locationNumber = $userLocationsRequest['inputLocationNumber'];
+                                $imagesToRemove = array();
+                                foreach ($userLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
+                                    $imagesToRemove[] = $inputLocationRemovedImage;
                                 }
-                                require "model/locationsManager.php";
-                                if (modifyLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice)) {
-                                    foreach ($imagesToRemove as $imageToRemove) {
-                                        require_once "model/imagesManager.php";
-                                        deleteImage($imageToRemove);
-                                        unlink($imageToRemove);
-                                    }
-                                    require_once "model/locationsManager.php";
-                                    $locationId = getLocationId($locationNumber);
-                                    require_once "model/imagesManager.php";
-                                    foreach ($locationImages as $locationImage) {
-                                        addLocationImages($locationImage, $locationId[0][0]);
-                                    }
-                                    require "view/home.php";
+
+                                $testsPassed = false;
+                                if (strlen($locationName) > 100) {
+                                    $modifyLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationPlace) > 130) {
+                                    $modifyLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationDescription) > 500) {
+                                    $modifyLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationClientsNb) > 10) {
+                                    $modifyLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                                } else if (strlen($locationPrice) > 7) {
+                                    $modifyLocationErrorMessage = "Le prix est trop élevé !";
                                 } else {
-                                    $modifyLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                    $testsPassed = true;
+                                }
+
+                                if ($testsPassed) {
+                                    $locationImages = array();
+                                    $uploadDir = "view/img/";
+                                    foreach ($userLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                        if ($userLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                            $fileName = $userLocationsFiles['inputLocationImage']['name'][$index];
+                                            $filePath = $uploadDir . $fileName;
+
+                                            require_once "model/imagesManager.php";
+                                            if (imageAlreadyExists($filePath)) {
+                                                $modifyLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                                require_once "model/locationsManager.php";
+                                                $location = getSpecificLocation($locationNumber);
+                                                require_once "model/imagesManager.php";
+                                                $locationImages = getLocationImages($location[0]['id']);
+                                                require "view/modifyUserLocation.php";
+                                            }
+                                            move_uploaded_file($tmpName, $filePath);
+                                            $locationImages[] = $filePath;
+                                        }
+                                    }
+                                    require "model/locationsManager.php";
+                                    if (modifyLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice)) {
+                                        foreach ($imagesToRemove as $imageToRemove) {
+                                            require_once "model/imagesManager.php";
+                                            deleteImage($imageToRemove);
+                                            unlink($imageToRemove);
+                                        }
+                                        require_once "model/locationsManager.php";
+                                        $locationId = getLocationId($locationNumber);
+                                        require_once "model/imagesManager.php";
+                                        foreach ($locationImages as $locationImage) {
+                                            addLocationImages($locationImage, $locationId[0][0]);
+                                        }
+                                        home();
+                                    } else {
+                                        $modifyLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                        require_once "model/locationsManager.php";
+                                        $location = getSpecificLocation($locationNumber);
+                                        require_once "model/imagesManager.php";
+                                        $locationImages = getLocationImages($location[0]['id']);
+                                        require "view/modifyUserLocation.php";
+                                    }
+                                } else {
                                     require_once "model/locationsManager.php";
                                     $location = getSpecificLocation($locationNumber);
                                     require_once "model/imagesManager.php";
@@ -395,21 +412,21 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                                     require "view/modifyUserLocation.php";
                                 }
                             } else {
+                                $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
                                 require_once "model/locationsManager.php";
-                                $location = getSpecificLocation($locationNumber);
+                                $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
                                 require_once "model/imagesManager.php";
                                 $locationImages = getLocationImages($location[0]['id']);
                                 require "view/modifyUserLocation.php";
                             }
-                        } else {
-                            $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
-                            require_once "model/locationsManager.php";
-                            $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
-                            require_once "model/imagesManager.php";
-                            $locationImages = getLocationImages($location[0]['id']);
-                            require "view/modifyUserLocation.php";
                         }
                     }
+                } else {
+                    require_once "model/locationsManager.php";
+                    $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
+                    require_once "model/imagesManager.php";
+                    $locationImages = getLocationImages($location[0]['id']);
+                    require "view/modifyUserLocation.php";
                 }
                 break;
             case 'delete' :
@@ -432,7 +449,7 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                 deleteReservation($locationId[0]['id']);
                 require_once "model/locationsManager.php";
                 deleteLocation($locationNumber);
-                require "view/home.php";
+                home();
                 break;
         }
     }
@@ -458,7 +475,7 @@ function generateNumber()
 function booking($bookingRequest)
 {
     $locationNumber = $_GET['locationNumber'];
-    if (empty($bookingRequest)) {
+    if (in_array("", $bookingRequest)) {
         require_once "model/locationsManager.php";
         $location = getSpecificLocation($locationNumber);
         require "view/booking.php";
@@ -561,7 +578,7 @@ function booking($bookingRequest)
                 echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
 
-            require "view/home.php";
+            home();
         } else {
             $reservationErrorMessage = "Une erreur est apparue, veuillez réessayer s'il vous plait.";
             require_once "model/locationsManager.php";
@@ -609,92 +626,102 @@ function adminUsers($adminUsersRequest)
     } else {
         switch ($_GET['usersFunction']) {
             case 'add' :
-                if (empty($adminUsersRequest)) {
-                    require "view/addUser.php";
-                } else {
-                    $userFirstName = $adminUsersRequest ['inputUserFirstName'];
-                    $userLastName = $adminUsersRequest ['inputUserLastName'];
-                    $userPhoneNumber = $adminUsersRequest ['inputUserPhoneNumber'];
-                    $userEmailAddress = $adminUsersRequest['inputUserEmailAddress'];
-                    $userPsw = $adminUsersRequest['inputUserPsw'];
-                    $userConfirmPsw = $adminUsersRequest['inputUserConfirmPsw'];
-
-                    $testsPassed = false;
-                    require_once "model/usersManager.php";
-                    if (strlen($userPhoneNumber) > 14) {
-                        $addUserErrorMessage = "Le n° de téléphone n'est pas valide !";
-                    } else if (strlen($userFirstName) > 80) {
-                        $addUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($userLastName) > 80) {
-                        $addUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-                    } else if (emailAlreadyExists($userEmailAddress)) {
-                        $addUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
-                    } else if ($userPsw != $userConfirmPsw) {
-                        $addUserErrorMessage = "Les mots de passe ne correspondent pas !";
-                    } else {
-                        $testsPassed = true;
-                    }
-
-                    if ($testsPassed) {
-                        require_once "model/usersManager.php";
-                        if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
-                            $addUserErrorMessage = null;
-                            home();
-                        } else {
-                            $addUserErrorMessage = "L'ajout a rencontré une erreur, merci de réessayer.";
-                            require "view/addUser.php";
-                        }
-                    } else {
+                if (!empty($adminUsersRequest)) {
+                    if (in_array("", $adminUsersRequest)) {
                         require "view/addUser.php";
-                    }
-                }
-                break;
-            case 'modify' :
-                if (empty($adminUsersRequest)) {
-                    require_once "model/usersManager.php";
-                    $users = getUsers();
-                    require "view/modifyUserChoice.php";
-                } else {
-                    if (empty($adminUsersRequest['inputUserFirstName'])) {
-                        require_once "model/usersManager.php";
-                        $user = getUser($adminUsersRequest['inputUserEmailAddress']);
-                        require "view/modifyUser.php";
                     } else {
-                        $userFirstName = $adminUsersRequest ['inputUserFirstName'];
-                        $userLastName = $adminUsersRequest ['inputUserLastName'];
-                        $userPhoneNumber = $adminUsersRequest ['inputUserPhoneNumber'];
+                        $userFirstName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $adminUsersRequest['inputUserFirstName']);
+                        $userLastName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'),$adminUsersRequest['inputUserLastName']);
+                        $userPhoneNumber = $adminUsersRequest['inputUserPhoneNumber'];
                         $userEmailAddress = $adminUsersRequest['inputUserEmailAddress'];
-                        $userId = $adminUsersRequest['inputUserId'];
+                        $userPsw = $adminUsersRequest['inputUserPsw'];
+                        $userConfirmPsw = $adminUsersRequest['inputUserConfirmPsw'];
 
                         $testsPassed = false;
                         require_once "model/usersManager.php";
                         if (strlen($userPhoneNumber) > 14) {
-                            $modifyUserErrorMessage = "Le n° de téléphone n'est pas valide !";
+                            $addUserErrorMessage = "Le n° de téléphone n'est pas valide !";
                         } else if (strlen($userFirstName) > 80) {
-                            $modifyUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+                            $addUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
                         } else if (strlen($userLastName) > 80) {
-                            $modifyUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                            $addUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
                         } else if (emailAlreadyExists($userEmailAddress)) {
-                            $modifyUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+                            $addUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+                        } else if ($userPsw != $userConfirmPsw) {
+                            $addUserErrorMessage = "Les mots de passe ne correspondent pas !";
                         } else {
                             $testsPassed = true;
                         }
 
-                        require_once "model/usersManager.php";
                         if ($testsPassed) {
-                            if (updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhoneNumber, $userId)) {
+                            require_once "model/usersManager.php";
+                            if (registerNewAccount($userEmailAddress, $userPsw, $userFirstName, $userLastName, $userPhoneNumber)) {
+                                $addUserErrorMessage = null;
                                 home();
                             } else {
-                                $modifyUserErrorMessage = "La modification a rencontré une erreur, merci de réessayer.";
-                                require_once "model/usersManager.php";
+                                $addUserErrorMessage = "L'ajout a rencontré une erreur, merci de réessayer.";
+                                require "view/addUser.php";
+                            }
+                        } else {
+                            require "view/addUser.php";
+                        }
+                    }
+                } else {
+                    require "view/addUser.php";
+                }
+                break;
+            case 'modify' :
+                if (!empty($adminUsersRequest)) {
+                    if (in_array("", $adminUsersRequest)) {
+                        require_once "model/usersManager.php";
+                        $users = getUsers();
+                        require "view/modifyUserChoice.php";
+                    } else {
+                        if (empty($adminUsersRequest['inputUserFirstName'])) {
+                            require_once "model/usersManager.php";
+                            $user = getUser($adminUsersRequest['inputUserEmailAddress']);
+                            require "view/modifyUser.php";
+                        } else {
+                            $userFirstName = $adminUsersRequest ['inputUserFirstName'];
+                            $userLastName = $adminUsersRequest ['inputUserLastName'];
+                            $userPhoneNumber = $adminUsersRequest ['inputUserPhoneNumber'];
+                            $userEmailAddress = $adminUsersRequest['inputUserEmailAddress'];
+                            $userId = $adminUsersRequest['inputUserId'];
+
+                            $testsPassed = false;
+                            require_once "model/usersManager.php";
+                            if (strlen($userPhoneNumber) > 14) {
+                                $modifyUserErrorMessage = "Le n° de téléphone n'est pas valide !";
+                            } else if (strlen($userFirstName) > 80) {
+                                $modifyUserErrorMessage = "Le champ prénom dépasse le nombre de caractères autorisés !";
+                            } else if (strlen($userLastName) > 80) {
+                                $modifyUserErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                            } else if (emailAlreadyExists($userEmailAddress)) {
+                                $modifyUserErrorMessage = "Cette adresse mail est déjà utilisée par un autre compte !";
+                            } else {
+                                $testsPassed = true;
+                            }
+
+                            require_once "model/usersManager.php";
+                            if ($testsPassed) {
+                                if (updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhoneNumber, $userId)) {
+                                    home();
+                                } else {
+                                    $modifyUserErrorMessage = "La modification a rencontré une erreur, merci de réessayer.";
+                                    require_once "model/usersManager.php";
+                                    $users = getUsers();
+                                    require "view/modifyUserChoice.php";
+                                }
+                            } else {
                                 $users = getUsers();
                                 require "view/modifyUserChoice.php";
                             }
-                        } else {
-                            $users = getUsers();
-                            require "view/modifyUserChoice.php";
                         }
                     }
+                } else {
+                    require_once "model/usersManager.php";
+                    $users = getUsers();
+                    require "view/modifyUserChoice.php";
                 }
                 break;
             case 'delete' :
@@ -717,160 +744,172 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
     } else {
         switch ($_GET['adminLocationsFunction']) {
             case 'add' :
-                if (empty($adminLocationsRequest)) {
-                    require "view/addAdminLocation.php";
-                } else {
-                    $locationName = $adminLocationsRequest['inputLocationName'];
-                    $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
-                    $locationPlace = $adminLocationsRequest['inputLocationPlace'];
-                    $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
-                    $locationDescription = $adminLocationsRequest['inputLocationDescription'];
-                    $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
-                    $locationHousingType = $adminLocationsRequest['inputLocationHousingType'];
-                    $locationClientsNb = $adminLocationsRequest['inputLocationClientsNb'];
-                    $locationPrice = $adminLocationsRequest['inputLocationPrice'];
-                    $locationNumber = generateNumber();
-                    require_once "model/locationsManager.php";
-                    while (locationNumberAlreadyExists($locationNumber) == true) {
-                        $locationNumber = generateNumber();
-                    }
-
-                    $testsPassed = false;
-                    if (strlen($locationName) > 100) {
-                        $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationPlace) > 130) {
-                        $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationDescription) > 500) {
-                        $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
-                    } else if (strlen($locationClientsNb) > 10) {
-                        $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
-                    } else if (strlen($locationPrice) > 7) {
-                        $addLocationErrorMessage = "Le prix est trop élevé !";
+                if (!empty($adminLocationsRequest)) {
+                    if (in_array("", $adminLocationsRequest)) {
+                        require "view/addAdminLocation.php";
                     } else {
-                        $testsPassed = true;
-                    }
-
-                    if ($testsPassed) {
-                        $locationImages = array();
-                        $uploadDir = "view/img/";
-                        foreach ($adminLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
-                            if ($adminLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
-                                $fileName = $adminLocationsFiles['inputLocationImage']['name'][$index];
-                                $filePath = $uploadDir . $fileName;
-
-                                require_once "model/imagesManager.php";
-                                if (imageAlreadyExists($filePath)) {
-                                    $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
-                                    require "view/addAdminLocation.php";
-                                }
-                                move_uploaded_file($tmpName, $filePath);
-
-                                $locationImages[] = $filePath;
-                            }
+                        $locationName = $adminLocationsRequest['inputLocationName'];
+                        $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                        $locationPlace = $adminLocationsRequest['inputLocationPlace'];
+                        $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                        $locationDescription = $adminLocationsRequest['inputLocationDescription'];
+                        $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                        $locationHousingType = $adminLocationsRequest['inputLocationHousingType'];
+                        $locationClientsNb = $adminLocationsRequest['inputLocationClientsNb'];
+                        $locationPrice = $adminLocationsRequest['inputLocationPrice'];
+                        $locationNumber = generateNumber();
+                        require_once "model/locationsManager.php";
+                        while (locationNumberAlreadyExists($locationNumber) == true) {
+                            $locationNumber = generateNumber();
                         }
 
-                        require_once "model/usersManager.php";
-                        $userId = getUserId($_SESSION['userEmailAddress']);
-
-                        require_once "model/locationsManager.php";
-                        if (addLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice, $userId)) {
-                            $locationId = getLocationId($locationNumber);
-                            require_once "model/imagesManager.php";
-                            foreach ($locationImages as $locationImage) {
-                                addLocationImages($locationImage, $locationId[0][0]);
-                            }
-                            require "view/home.php";
+                        $testsPassed = false;
+                        if (strlen($locationName) > 100) {
+                            $addLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationPlace) > 130) {
+                            $addLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationDescription) > 500) {
+                            $addLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                        } else if (strlen($locationClientsNb) > 10) {
+                            $addLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                        } else if (strlen($locationPrice) > 7) {
+                            $addLocationErrorMessage = "Le prix est trop élevé !";
                         } else {
-                            $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                            $testsPassed = true;
+                        }
+
+                        if ($testsPassed) {
+                            $locationImages = array();
+                            $uploadDir = "view/img/";
+                            foreach ($adminLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                if ($adminLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                    $fileName = $adminLocationsFiles['inputLocationImage']['name'][$index];
+                                    $filePath = $uploadDir . $fileName;
+
+                                    require_once "model/imagesManager.php";
+                                    if (imageAlreadyExists($filePath)) {
+                                        $addLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                        require "view/addAdminLocation.php";
+                                    }
+                                    move_uploaded_file($tmpName, $filePath);
+
+                                    $locationImages[] = $filePath;
+                                }
+                            }
+
+                            require_once "model/usersManager.php";
+                            $userId = getUserId($_SESSION['userEmailAddress']);
+
+                            require_once "model/locationsManager.php";
+                            if (addLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice, $userId)) {
+                                $locationId = getLocationId($locationNumber);
+                                require_once "model/imagesManager.php";
+                                foreach ($locationImages as $locationImage) {
+                                    addLocationImages($locationImage, $locationId[0][0]);
+                                }
+                                home();
+                            } else {
+                                $addLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                require "view/addAdminLocation.php";
+                            }
+                        } else {
                             require "view/addAdminLocation.php";
                         }
-                    } else {
-                        require "view/addAdminLocation.php";
                     }
+                } else {
+                    require "view/addAdminLocation.php";
                 }
                 break;
             case
             'modify' :
-                if (empty($adminLocationsRequest)) {
-                    require_once "model/locationsManager.php";
-                    $locations = getLocations();
-                    require "view/modifyAdminLocationChoice.php";
-                } else {
-                    if (empty($adminLocationsRequest['inputLocationPlace'])) {
+                if (!empty($adminLocationsRequest)) {
+                    if (in_array("", $adminLocationsRequest)) {
                         require_once "model/locationsManager.php";
-                        $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
-                        require_once "model/imagesManager.php";
-                        $locationImages = getLocationImages($location[0]['id']);
-                        require "view/modifyAdminLocation.php";
+                        $locations = getLocations();
+                        require "view/modifyAdminLocationChoice.php";
                     } else {
-                        if (isset($adminLocationsRequest['inputLocationExistingImage']) || isset($adminLocationsFiles['inputLocationImage'])) {
-                            $locationName = $adminLocationsRequest['inputLocationName'];
-                            $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
-                            $locationPlace = $adminLocationsRequest['inputLocationPlace'];
-                            $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
-                            $locationDescription = $adminLocationsRequest['inputLocationDescription'];
-                            $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
-                            $locationHousingType = $adminLocationsRequest['inputLocationHousingType'];
-                            $locationClientsNb = $adminLocationsRequest['inputLocationClientsNb'];
-                            $locationPrice = $adminLocationsRequest['inputLocationPrice'];
-                            $locationNumber = $adminLocationsRequest['inputLocationNumber'];
-                            $imagesToRemove = array();
-                            foreach ($adminLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
-                                $imagesToRemove[] = $inputLocationRemovedImage;
-                            }
-
-                            $testsPassed = false;
-                            if (strlen($locationName) > 100) {
-                                $modifyLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationPlace) > 130) {
-                                $modifyLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationDescription) > 500) {
-                                $modifyLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
-                            } else if (strlen($locationClientsNb) > 10) {
-                                $modifyLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
-                            } else if (strlen($locationPrice) > 7) {
-                                $modifyLocationErrorMessage = "Le prix est trop élevé !";
-                            } else {
-                                $testsPassed = true;
-                            }
-
-                            if ($testsPassed) {
-                                $locationImages = array();
-                                $uploadDir = "view/img/";
-                                foreach ($adminLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
-                                    if ($adminLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
-                                        $fileName = $adminLocationsFiles['inputLocationImage']['name'][$index];
-                                        $filePath = $uploadDir . $fileName;
-
-                                        require_once "model/imagesManager.php";
-                                        if (imageAlreadyExists($filePath)) {
-                                            $modifyLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
-                                            require_once "model/locationsManager.php";
-                                            $location = getSpecificLocation($locationNumber);
-                                            require_once "model/imagesManager.php";
-                                            $locationImages = getLocationImages($location[0]['id']);
-                                            require "view/modifyAdminLocation.php";
-                                        }
-                                        move_uploaded_file($tmpName, $filePath);
-                                        $locationImages[] = $filePath;
-                                    }
+                        if ($adminLocationsRequest['inputLocationPlace'] == null) {
+                            require_once "model/locationsManager.php";
+                            $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
+                            require_once "model/imagesManager.php";
+                            $locationImages = getLocationImages($location[0]['id']);
+                            require "view/modifyAdminLocation.php";
+                        } else {
+                            if ($adminLocationsRequest['inputLocationExistingImage'] == null || $adminLocationsFiles['inputLocationImage'] == null) {
+                                $locationName = $adminLocationsRequest['inputLocationName'];
+                                $locationName = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationName);
+                                $locationPlace = $adminLocationsRequest['inputLocationPlace'];
+                                $locationPlace = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationPlace);
+                                $locationDescription = $adminLocationsRequest['inputLocationDescription'];
+                                $locationDescription = str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $locationDescription);
+                                $locationHousingType = $adminLocationsRequest['inputLocationHousingType'];
+                                $locationClientsNb = $adminLocationsRequest['inputLocationClientsNb'];
+                                $locationPrice = $adminLocationsRequest['inputLocationPrice'];
+                                $locationNumber = $adminLocationsRequest['inputLocationNumber'];
+                                $imagesToRemove = array();
+                                foreach ($adminLocationsRequest['inputLocationRemovedImages'] as $inputLocationRemovedImage) {
+                                    $imagesToRemove[] = $inputLocationRemovedImage;
                                 }
-                                require "model/locationsManager.php";
-                                if (modifyLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice)) {
-                                    foreach ($imagesToRemove as $imageToRemove) {
-                                        require_once "model/imagesManager.php";
-                                        deleteImage($imageToRemove);
-                                        unlink($imageToRemove);
-                                    }
-                                    require_once "model/locationsManager.php";
-                                    $locationId = getLocationId($locationNumber);
-                                    require_once "model/imagesManager.php";
-                                    foreach ($locationImages as $locationImage) {
-                                        addLocationImages($locationImage, $locationId[0][0]);
-                                    }
-                                    require "view/home.php";
+
+                                $testsPassed = false;
+                                if (strlen($locationName) > 100) {
+                                    $modifyLocationErrorMessage = "Le champ nom dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationPlace) > 130) {
+                                    $modifyLocationErrorMessage = "Le champ lieu dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationDescription) > 500) {
+                                    $modifyLocationErrorMessage = "Le champ description dépasse le nombre de caractères autorisés !";
+                                } else if (strlen($locationClientsNb) > 10) {
+                                    $modifyLocationErrorMessage = "Le nombre maximal de clients est trop élevé !";
+                                } else if (strlen($locationPrice) > 7) {
+                                    $modifyLocationErrorMessage = "Le prix est trop élevé !";
                                 } else {
-                                    $modifyLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                    $testsPassed = true;
+                                }
+
+                                if ($testsPassed) {
+                                    $locationImages = array();
+                                    $uploadDir = "view/img/";
+                                    foreach ($adminLocationsFiles['inputLocationImage']['tmp_name'] as $index => $tmpName) {
+                                        if ($adminLocationsFiles['inputLocationImage']['error'][$index] === UPLOAD_ERR_OK) {
+                                            $fileName = $adminLocationsFiles['inputLocationImage']['name'][$index];
+                                            $filePath = $uploadDir . $fileName;
+
+                                            require_once "model/imagesManager.php";
+                                            if (imageAlreadyExists($filePath)) {
+                                                $modifyLocationErrorMessage = "Un nom d'image similaire existe déjà pour '$fileName', veuillez la renommer.";
+                                                require_once "model/locationsManager.php";
+                                                $location = getSpecificLocation($locationNumber);
+                                                require_once "model/imagesManager.php";
+                                                $locationImages = getLocationImages($location[0]['id']);
+                                                require "view/modifyAdminLocation.php";
+                                            }
+                                            move_uploaded_file($tmpName, $filePath);
+                                            $locationImages[] = $filePath;
+                                        }
+                                    }
+                                    require "model/locationsManager.php";
+                                    if (modifyLocation($locationNumber, $locationName, $locationPlace, $locationDescription, $locationHousingType, $locationClientsNb, $locationPrice)) {
+                                        foreach ($imagesToRemove as $imageToRemove) {
+                                            require_once "model/imagesManager.php";
+                                            deleteImage($imageToRemove);
+                                            unlink($imageToRemove);
+                                        }
+                                        require_once "model/locationsManager.php";
+                                        $locationId = getLocationId($locationNumber);
+                                        require_once "model/imagesManager.php";
+                                        foreach ($locationImages as $locationImage) {
+                                            addLocationImages($locationImage, $locationId[0][0]);
+                                        }
+                                        home();
+                                    } else {
+                                        $modifyLocationErrorMessage = "Une erreur est apparue, veuillez réessayer.";
+                                        require_once "model/locationsManager.php";
+                                        $location = getSpecificLocation($locationNumber);
+                                        require_once "model/imagesManager.php";
+                                        $locationImages = getLocationImages($location[0]['id']);
+                                        require "view/modifyAdminLocation.php";
+                                    }
+                                } else {
                                     require_once "model/locationsManager.php";
                                     $location = getSpecificLocation($locationNumber);
                                     require_once "model/imagesManager.php";
@@ -878,21 +917,21 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
                                     require "view/modifyAdminLocation.php";
                                 }
                             } else {
+                                $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
                                 require_once "model/locationsManager.php";
-                                $location = getSpecificLocation($locationNumber);
+                                $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
                                 require_once "model/imagesManager.php";
                                 $locationImages = getLocationImages($location[0]['id']);
                                 require "view/modifyAdminLocation.php";
                             }
-                        } else {
-                            $modifyLocationErrorMessage = "Veuilez rentrer au minimum une image !";
-                            require_once "model/locationsManager.php";
-                            $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
-                            require_once "model/imagesManager.php";
-                            $locationImages = getLocationImages($location[0]['id']);
-                            require "view/modifyAdminLocation.php";
                         }
                     }
+                } else {
+                    require_once "model/locationsManager.php";
+                    $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
+                    require_once "model/imagesManager.php";
+                    $locationImages = getLocationImages($location[0]['id']);
+                    require "view/modifyAdminLocation.php";
                 }
                 break;
             case 'delete' :
@@ -915,7 +954,7 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
                 deleteReservation($locationId[0]['id']);
                 require_once "model/locationsManager.php";
                 deleteLocation($locationNumber);
-                require "view/home.php";
+                home();
                 break;
         }
     }

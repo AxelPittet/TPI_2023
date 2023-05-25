@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 22.05.2023
+ * date : 25.05.2023
  */
 
 ob_start();
@@ -24,14 +24,14 @@ ob_start();
                 <div class="flex w-full md:items-center">
                     <?php if (isset($images[1])) :
                         ?>
-                        <div class="carousel h-1/2 w-1/2">
+                        <div class="carousel w-1/2 max-h-96">
                             <?php
                             $imageCount = 0;
                             foreach ($images as $image) :
                                 $imageCount += 1;
                                 ?>
                                 <div id="slide<?= $imageCount ?>" class="carousel-item relative w-full">
-                                    <img src="<?= $image ?>" class="w-full rounded-box"/>
+                                    <img src="<?= $image ?>" class="object-contain w-full rounded-box"/>
                                     <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
                                         <a href="#slide<?= $imageCount - 1 ?>" class="btn btn-circle">❮</a>
                                         <a href="#slide<?= $imageCount + 1 ?>" class="btn btn-circle">❯</a>
@@ -41,7 +41,7 @@ ob_start();
                             ?>
                         </div>
                     <?php else : ?>
-                        <img src="<?= $images[0] ?>" class="h-1/2 w-1/2 rounded-box"/>
+                        <img src="<?= $images[0] ?>" class="object-contain w-1/2 rounded-box"/>
                     <?php endif; ?>
                     <div class="divider-horizontal"></div>
                     <div>
