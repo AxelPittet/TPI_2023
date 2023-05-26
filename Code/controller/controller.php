@@ -422,11 +422,11 @@ function userLocations($userLocationsRequest, $userLocationsFiles)
                         }
                     }
                 } else {
+                    require_once "model/usersManager.php";
+                    $userId = getUserId($_SESSION['userEmailAddress']);
                     require_once "model/locationsManager.php";
-                    $location = getSpecificLocation($userLocationsRequest['inputLocationNumber']);
-                    require_once "model/imagesManager.php";
-                    $locationImages = getLocationImages($location[0]['id']);
-                    require "view/modifyUserLocation.php";
+                    $userLocations = getUserLocations($userId);
+                    require "view/modifyUserLocationChoice.php";
                 }
                 break;
             case 'delete' :
@@ -928,10 +928,8 @@ function adminLocations($adminLocationsRequest, $adminLocationsFiles)
                     }
                 } else {
                     require_once "model/locationsManager.php";
-                    $location = getSpecificLocation($adminLocationsRequest['inputLocationNumber']);
-                    require_once "model/imagesManager.php";
-                    $locationImages = getLocationImages($location[0]['id']);
-                    require "view/modifyAdminLocation.php";
+                    $locations = getLocations();
+                    require "view/modifyAdminLocationChoice.php";
                 }
                 break;
             case 'delete' :
