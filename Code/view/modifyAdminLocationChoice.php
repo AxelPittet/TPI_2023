@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 23.05.2023
+ * date : 30.05.2023
  */
 
 ob_start();
@@ -26,7 +26,7 @@ ob_start();
 
                                          as $location):
                                     ?>
-                                    <option value="<?= $location['locationNumber'] ?>"><?= $location['locationNumber'] ?></option>
+                                    <option value="<?= htmlentities($location['locationNumber']) ?>"><?= htmlentities($location['locationNumber']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

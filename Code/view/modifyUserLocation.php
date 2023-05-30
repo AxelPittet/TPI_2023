@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 16.05.2023
+ * date : 30.05.2023
  */
 
 ob_start();
@@ -20,25 +20,25 @@ ob_start();
                               enctype="multipart/form-data">
                             <div class="form-control">
                                 <input type="text" placeholder="N° de location" class="input input-bordered"
-                                       name="inputLocationNumber" value="<?= $locationInformations['locationNumber'] ?>"
+                                       name="inputLocationNumber" value="<?= htmlentities($locationInformations['locationNumber']) ?>"
                                        readonly required/>
                             </div>
                             <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
                             <div class="form-control">
                                 <input type="text" placeholder="Nom" class="input input-bordered"
-                                       name="inputLocationName" value="<?= $locationInformations['name'] ?>" required/>
+                                       name="inputLocationName" value="<?= htmlentities($locationInformations['name']) ?>" required/>
                             </div>
                             <br>
                             <div class="form-control">
                                 <input type="text" placeholder="Adresse" class="input input-bordered"
-                                       name="inputLocationPlace" value="<?= $locationInformations['place'] ?>"
+                                       name="inputLocationPlace" value="<?= htmlentities($locationInformations['place']) ?>"
                                        required/>
                             </div>
                             <br>
                             <div class="form-control">
                                 <input type="text" placeholder="Description" class="input input-bordered"
                                        name="inputLocationDescription"
-                                       value="<?= $locationInformations['description'] ?>" required/>
+                                       value="<?= htmlentities($locationInformations['description']) ?>" required/>
                             </div>
                             <br>
                             <div class="form-control">
@@ -50,14 +50,14 @@ ob_start();
                                         <span class="label-text mr-2">Maison :</span>
                                     </label>
                                     <input id="maison" type="radio" name="inputLocationHousingType" class="radio"
-                                           value="Maison" <?php if ($locationInformations['housingType'] == 'Maison') : ?> checked <?php endif; ?>
+                                           value="Maison" <?php if (htmlentities($locationInformations['housingType']) == 'Maison') : ?> checked <?php endif; ?>
                                            required/>
                                     <div class="divider-horizontal"></div>
                                     <label for="appartement">
                                         <span class="label-text mr-2">Appartement :</span>
                                     </label>
                                     <input id="appartement" type="radio" name="inputLocationHousingType" class="radio"
-                                           value="Appartement" <?php if ($locationInformations['housingType'] == 'Appartement') : ?> checked <?php endif; ?>
+                                           value="Appartement" <?php if (htmlentities($locationInformations['housingType']) == 'Appartement') : ?> checked <?php endif; ?>
                                            required/>
                                 </div>
                             </div>
@@ -66,20 +66,20 @@ ob_start();
                                 <input type="number" placeholder="Nombre maximum de clients"
                                        class="input input-bordered"
                                        name="inputLocationClientsNb"
-                                       value="<?= $locationInformations['maximumNbOfClients'] ?>" required/>
+                                       value="<?= htmlentities($locationInformations['maximumNbOfClients']) ?>" required/>
                             </div>
                             <br>
                             <div class="form-control">
                                 <input type="number" placeholder="Prix par nuit" class="input input-bordered"
                                        name="inputLocationPrice" step=".01"
-                                       value="<?= $locationInformations['pricePerNight'] ?>" required/>
+                                       value="<?= htmlentities($locationInformations['pricePerNight']) ?>" required/>
                             </div>
                             <?php
                             foreach ($locationImages as $locationImage) :
                                 $imageName = explode('\\', $locationImage['name'])
                                 ?><br>
                                 <input class="input input-bordered" type="text"
-                                       name="inputLocationExistingImage[]" value="<?= $imageName[0] ?>"
+                                       name="inputLocationExistingImage[]" value="<?= htmlentities($imageName[0]) ?>"
                                        accept="image/*" readonly required>
                                 <input type="hidden" name="inputLocationRemovedImages[]" value="">
                                 <button type="button" class="btn" onclick="
@@ -106,7 +106,7 @@ ob_start();
                                        class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                                 <h3>Êtes vous sur de vouloir supprimer cette location ?</h3>
                                 <br>
-                                <a href="index.php?action=userLocations&userLocationsFunction=delete&locationNumber=<?= $locationInformations['locationNumber'] ?>" type="button"
+                                <a href="index.php?action=userLocations&userLocationsFunction=delete&locationNumber=<?= htmlentities($locationInformations['locationNumber']) ?>" type="button"
                                    class="btn btn-primary">
                                     <button>Oui</button>
                                 </a>

@@ -24,6 +24,11 @@ function reservationNumberAlreadyExists($reservationNumber)
 }
 
 
+/**
+ * This function is designed to return the reservations of a specific location in the database
+ * @param $locationId
+ * @return array|null
+ */
 function getLocationReservations($locationId)
 {
     $getLocationReservationsQuery = "SELECT * FROM reservations WHERE location_id = '$locationId';";
@@ -33,6 +38,16 @@ function getLocationReservations($locationId)
 }
 
 
+/**
+ * This function is designed to add a reservation in the database
+ * @param $reservationNumber
+ * @param $startDate
+ * @param $endDate
+ * @param $price
+ * @param $locationId
+ * @param $userId
+ * @return bool|null
+ */
 function bookLocation($reservationNumber, $startDate, $endDate, $price, $locationId, $userId)
 {
     $bookLocationQuery = "INSERT INTO reservations (reservationNumber, startDate, endDate, price, location_id, user_id) VALUES ('$reservationNumber', '$startDate', '$endDate', '$price', '$locationId', '$userId')";
@@ -42,6 +57,11 @@ function bookLocation($reservationNumber, $startDate, $endDate, $price, $locatio
 }
 
 
+/**
+ * This function is designed to delete a reservation from the database
+ * @param $locationId
+ * @return bool|null
+ */
 function deleteReservation($locationId){
     $deleteReservationQuery = "DELETE FROM reservations WHERE location_id = '$locationId';";
     require_once "model/dbconnector.php";

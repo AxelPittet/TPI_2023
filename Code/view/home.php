@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * save date : 25.05.2023
+ * save date : 30.05.2023
  */
 
 ob_start();
@@ -38,13 +38,13 @@ ob_start();
                         if ($count < 5) :
                             ?>
                             <div id="slide<?= $count ?>" class="carousel-item relative w-full">
-                                <img src="<?= $images[0] ?>" class="object-contain w-full"/>
+                                <img src="<?= htmlentities($images[0]) ?>" class="object-contain w-full"/>
                                 <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
                                     <a href="#slide<?= $count - 1 ?>" class="btn btn-circle">❮</a>
                                     <a href="#slide<?= $count + 1 ?>" class="btn btn-circle">❯</a>
                                 </div>
                                 <a class="absolute flex justify-between transform -translate-x-1/2 bottom-1 left-1/2"
-                                   href="index.php?action=showLocation&locationNumber=<?= $location['locationNumber'] ?>">
+                                   href="index.php?action=showLocation&locationNumber=<?= htmlentities($location['locationNumber']) ?>">
                                     <button class="btn btn-primary">Accéder</button>
                                 </a>
                             </div>

@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 23.05.2023
+ * date : 30.05.2023
  */
 
 ob_start();
@@ -23,7 +23,7 @@ ob_start();
                                 <?php
                                 foreach ($users as $user):
                                 ?>
-                                    <option value="<?= $user['email'] ?>"><?= $user['email'] ?></option>
+                                    <option value="<?= htmlentities($user['email']) ?>"><?= htmlentities($user['email']) ?></option>
                                     <?php
                                     endforeach;
                                     ?>

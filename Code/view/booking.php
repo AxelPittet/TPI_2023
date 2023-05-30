@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 22.05.2023
+ * date : 30.05.2023
  */
 
 ob_start();
@@ -15,10 +15,10 @@ foreach ($location as $item) :
     <div class="hero min-h-screen">
         <div class="hero-content text-center">
             <div class="max-w-screen">
-                <h1 class="text-5xl font-bold">Réservation de : <?= $item['name'] ?></h1>
+                <h1 class="text-5xl font-bold">Réservation de : <?= htmlentities($item['name']) ?></h1>
                 <div class="divider before:bg-neutral-50 after:bg-neutral-50"></div>
                 <div class="divider-vertical"></div>
-                <form action="index.php?action=booking&locationNumber=<?= $item['locationNumber'] ?>" method="post">
+                <form action="index.php?action=booking&locationNumber=<?= htmlentities($item['locationNumber']) ?>" method="post">
                     <div class="flex w-full justify-around">
                         <p class="label-text">Date de début</p>
                         <div class="divider-horizontal"></div>
@@ -60,7 +60,7 @@ foreach ($location as $item) :
             $dateCount = 0;
             foreach ($startDates as $startDate):
             ?>
-            ["<?= $startDate ?>", "<?= $endDates[$dateCount] ?>"],
+            ["<?= htmlentities($startDate) ?>", "<?= htmlentities($endDates[$dateCount]) ?>"],
             <?php
             $dateCount += 1;
             endforeach; ?>
@@ -146,7 +146,7 @@ foreach ($location as $item) :
             endDate = new Date(endDateValue);
             var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
             var numberOfNights = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            var pricePerNight = <?= $item['pricePerNight'] ?>
+            var pricePerNight = <?= htmlentities($item['pricePerNight']) ?>
 
             var totalPriceElement = document.getElementById('totalPrice');
             var totalPriceInput = document.getElementById('inputTotalPrice');

@@ -89,16 +89,16 @@ ob_start();
                 <?php
                 endif;
                 ?>
-                <a href="index.php?action=showLocation&locationNumber=<?= $location['locationNumber'] ?>">
+                <a href="index.php?action=showLocation&locationNumber=<?= htmlentities($location['locationNumber']) ?>">
                     <div class="card card-compact bg-base-100 shadow-xl max-h-80 min-h-full">
-                        <figure><img src="<?= $images[0] ?>" alt="<?= $location['name'] ?>" class="w-96"/>
+                        <figure><img src="<?= htmlentities($images[0]) ?>" alt="<?= htmlentities($location['name']) ?>" class="w-96"/>
                         </figure>
                         <div class="card-body">
                             <h2 class="card-title relative">
-                                <?= $location['name'] ?>
+                                <?= htmlentities($location['name']) ?>
                             </h2>
-                            <p class="text-left"><?= $location['place'] ?></p>
-                            <p class="text-left"><?= $location['pricePerNight'] . ' CHF' ?></p>
+                            <p class="text-left"><?= htmlentities($location['place']) ?></p>
+                            <p class="text-left"><?= htmlentities($location['pricePerNight']) . ' CHF' ?></p>
                         </div>
                     </div>
                 </a>

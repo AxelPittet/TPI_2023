@@ -2,7 +2,7 @@
 /**
  * author : Axel Pittet
  * project : TPI 2023 - Loc'Habitat
- * date : 23.05.2023
+ * date : 30.05.2023
  */
 
 
@@ -165,8 +165,8 @@ function getUser($userEmailAddress){
  * @param $userId
  * @return bool|null
  */
-function updateUser($userEmailAddress, $userFirstName, $userLastName, $userPhoneNumber, $userId){
-    $updateUserQuery = "UPDATE users SET lastname='$userLastName', firstname = '$userFirstName', email = '$userEmailAddress', phonenumber = '$userPhoneNumber' WHERE id = '$userId'";
+function updateUser($userFirstName, $userLastName, $userPhoneNumber, $userId){
+    $updateUserQuery = "UPDATE users SET lastname='$userLastName', firstname = '$userFirstName', phonenumber = '$userPhoneNumber' WHERE id = '$userId'";
     require_once "model/dbconnector.php";
     $result = executeQueryIUD($updateUserQuery);
     return $result;
