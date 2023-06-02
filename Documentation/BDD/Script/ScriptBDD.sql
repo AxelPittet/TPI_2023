@@ -108,7 +108,37 @@ CREATE TABLE IF NOT EXISTS `lochab_apt_BDD`.`images` (
     REFERENCES `lochab_apt_BDD`.`locations` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = INNODB;
+
+
+-- -----------------------------------------------------
+-- Datas `lochab_apt_BDD`.`users`
+-- -----------------------------------------------------
+INSERT INTO users (id, lastname, firstname, email, phonenumber, `password`, usertype) VALUES (1, 'LocHabitat', 'Admin', 'Admin@LocHabitat.ch', '0123456789', '$2y$10$W2qSG9bjnUaD76moFkScXOg75r8G/E48IY.kCpmjgBYcAtepOaKaC', '2'); 
+
+
+-- -----------------------------------------------------
+-- Datas `lochab_apt_BDD`.`locations`
+-- -----------------------------------------------------
+INSERT INTO locations (id, locationNumber, name, place, description, housingType, maximumNbOfClients, pricePerNight, user_id) VALUES (1, 975188771, 'Appartement sur lausanne', "Chemin d'ouchy 18, 1200 Lausanne", 'Magnifique 50m*2 au bord du lac léman.', 'Appartement', 3, 40.0, 1),
+(2, 392223435, 'Château en périphérie de Paris', 'Chemin de Versailles 1, Versailles', 'Ancienne habitation des rois de France', 'Maison', 60, 800.0, 1),
+(3, 835453766, 'Jolie maison à Yverdon', 'Chemin des rives 3, 1400 Yverdon', "Maison moderne en centre d'Yverdon", 'Maison', 6, 80.0, 1),
+(4, 61425554, 'Grand appartement moderne à Orbe', 'Route du Signal 4, 1350 Orbe', "Spacieux 3.5 pièces de 76 m2 en ville d'Orbe avec une place de parc et un étage", 'Appartement', 4, 65.0, 1);
+
+
+-- -----------------------------------------------------
+-- Datas `lochab_apt_BDD`.`images`
+-- -----------------------------------------------------
+INSERT INTO images (id, name, location_id) VALUES (1, 'view/img/291847011.jpg', 1),
+(2, 'view/img/chateau-versailles.jpg', 2),
+(3, 'view/img/versailles-chateau-2916790-jpg_2551712_1250x625.jpg', 2),
+(4, 'view/img/maison.jpg', 3),
+(5, 'view/img/amenagement-interieur-conseils-et-solutions-00.jpg', 3),
+(6, 'view/img/chambre-moderne-gris-blanc-la-maison-saint-gobain.jpg', 3),
+(7, 'view/img/big__apartment-for-sale-3-rooms-orbe-5e01a4e56b0a6.jpg', 4),
+(8, 'view/img/big__apartment-for-sale-3-rooms-orbe-5e019c5bd9fa4.jpg', 4),
+(9, 'view/img/big__apartment-for-sale-3-rooms-orbe-5e019c5ae17c3.jpg', 4); 
+
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
