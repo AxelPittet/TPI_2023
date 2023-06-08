@@ -538,12 +538,12 @@ function booking($bookingRequest)
                         $mail->isSMTP();
                         $mail->Host = 'mail01.swisscenter.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'confirmation@lochabitat.mycpnv.ch';
-                        $mail->Password = 'Pa$$w0rdLocHabitat';
+                        $mail->Username = 'confirmation@lochab.mycpnv.ch';
+                        $mail->Password = 'Pa$$w0rdLocHab';
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
-                        $mail->setFrom('confirmation@lochabitat.mycpnv.ch', 'LocHabitat Confirmation');
+                        $mail->setFrom('confirmation@lochab.mycpnv.ch', 'LocHabitat Confirmation');
                         $mail->addAddress($_SESSION['userEmailAddress']);
 
                         $mail->isHTML(true);
@@ -561,12 +561,12 @@ function booking($bookingRequest)
                         $mail->isSMTP();
                         $mail->Host = 'mail01.swisscenter.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'confirmation@lochabitat.mycpnv.ch';
-                        $mail->Password = 'Pa$$w0rdLocHabitat';
+                        $mail->Username = 'confirmation@lochab.mycpnv.ch';
+                        $mail->Password = 'Pa$$w0rdLocHab';
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
-                        $mail->setFrom('confirmation@lochabitat.mycpnv.ch', 'LocHabitat Confirmation');
+                        $mail->setFrom('confirmation@lochab.mycpnv.ch', 'LocHabitat Confirmation');
                         $mail->addAddress($userEmailAddress[0]['email']);
 
                         $mail->isHTML(true);
